@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">leXXicon</string>
+    <string name="credits">"Tiny Games Collection|Presents:|FLEXY TOWER|By Berghem 2013||Programming By:|Marco Cognolato||Theme Music:|Under a Olive Tree|By Simone Radice||Many Thanks to:|Krystof Pesek|for insipring sketch||OpenProcessing Team|for awesome RAD||Jeffrey Traer|for physic library||Capolinea guys|for testing||Special Thanks to:|ElaCogno|Global Support|||See you soon in|another Tiny Game"</string>
+    <string name="bItaliano">"Italian Dictionary"</string>
+    <string name="bBergamo">"Bergamo Dictionary"</string>
+
+</resources>

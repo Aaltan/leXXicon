@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/loading" >
+
+    <ProgressBar
+        android:id="@+id/loadingPB"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminate="true"
+        android:max="100"
+        android:progress="1" />
+
+    <ImageView
+        android:id="@+id/iLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/txtload"
+        android:layout_above="@+id/loadingPB"
+        android:layout_alignTop="@+id/bItalian"
+        android:layout_alignParentLeft="true"/>
+
+    <Button
+        android:id="@+id/bItalian"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/bItaliano"
+        android:textScaleX="1.5"
+        android:layout_above="@+id/loadingPB"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/bBergamo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/bBergamo"
+        android:textScaleX="1.5"
+        android:layout_alignTop="@+id/bItalian"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="53dp"/>
+
+</RelativeLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">leXXicon</string>
+    <string name="credits">"Tiny Games Collection|Presents:|FLEXY TOWER|By Berghem 2013||Programming By:|Marco Cognolato||Tema Musicale:|Under a Olive Tree|By Simone Radice||Ringraziamenti a:|Krystof Pesek|Per la geniale idea||OpenProcessing Team|RAD di sviluppo||Jeffrey Traer|Libreria fisica||Ragazzi del Capolinea|Per il testing||Ringaziamento Speciale:|ElaCogno|Supporto Globale|||Arrivederci in un|altro Tiny Game"</string>
+    <string name="bItaliano">"Dizionario Italiano"</string>
+    <string name="bBergamo">"Dizionario Bergamasco"</string>
+
+</resources>
