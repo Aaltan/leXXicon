@@ -52,4 +52,6 @@ Enjoy.
 
 _**Aaltan -AKA- Marco Cognolato**_
 
-[[https://github.com/Aaltan/leXXicon/blob/master/wikistuff/leXXicon_Menu.png|alt=Menu]]
+![Main Menu](https://github.com/Aaltan/leXXicon/blob/master/wikistuff/leXXicon_Menu.png)
+
+![In Game](https://github.com/Aaltan/leXXicon/blob/master/wikistuff/leXXicon_InGame.png)
