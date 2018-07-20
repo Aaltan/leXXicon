@@ -15,7 +15,7 @@ public class StarStruct {
 	public StarStruct(PApplet father, String anImage) {
 		mFather = father;
     mImage = mFather.loadImage(anImage);
-    mImage.resize(PApplet.round(CrossVariables.STAR_IMAGE_STANDARD_X / CrossVariables.RESIZE_FACTOR_X), PApplet.round(CrossVariables.STAR_IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y));
+    mImage.resize(PApplet.round(CrossVariables.SAGA_STAR_IMAGE_STANDARD_X / CrossVariables.RESIZE_FACTOR_X), PApplet.round(CrossVariables.SAGA_STAR_IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y));
     mImage.loadPixels();
     mImageW = mImage.width;
     mImageH = mImage.height;

@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-import com.cyberg.lexxicon.Main;
 import com.cyberg.lexxicon.environment.CrossVariables;
 
-public class LevelStruct {
+public class LevelSagaStruct {
 
 	private PApplet mFather = null;
 	private PImage mImage = null;
@@ -21,16 +20,16 @@ public class LevelStruct {
   private ArrayList<NumberStruct> mNumbers = null;
   private ArrayList<StarStruct> mStars = null;
 	
-	public LevelStruct(PApplet aFather, String anImage) {
+	public LevelSagaStruct(PApplet aFather, String anImage) {
 		mFather = aFather;
     mImage = mFather.loadImage(anImage);
-    mImage.resize(PApplet.round(CrossVariables.LEVEL_IMAGE_STANDARD_X / CrossVariables.RESIZE_FACTOR_X), PApplet.round(CrossVariables.LEVEL_IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y));
+    mImage.resize(PApplet.round(CrossVariables.SAGA_IMAGE_STANDARD_X / CrossVariables.RESIZE_FACTOR_X), PApplet.round(CrossVariables.SAGA_IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y));
     mImage.loadPixels();
     mImageW = mImage.width;
     mImageH = mImage.height;
 	}
 	
-	public LevelStruct(PImage anImage, ArrayList<NumberStruct> numbers, ArrayList<StarStruct> stars, int levelNum) {
+	public LevelSagaStruct(PImage anImage, ArrayList<NumberStruct> numbers, ArrayList<StarStruct> stars, int levelNum) {
 		mImage = anImage;
     mImageW = mImage.width;
     mImageH = mImage.height;

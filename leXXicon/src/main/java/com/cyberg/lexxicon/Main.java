@@ -9,9 +9,11 @@ import com.cyberg.lexxicon.game.GameCore;
 import com.cyberg.lexxicon.game.LetterGrid;
 import com.cyberg.lexxicon.game.PointsPlate;
 import com.cyberg.lexxicon.game.SuggestionPlate;
-import com.cyberg.lexxicon.levels.LevelFactory;
-import com.cyberg.lexxicon.levels.LevelGrid;
-import com.cyberg.lexxicon.levels.LevelsCore;
+import com.cyberg.lexxicon.level.LevelCore;
+import com.cyberg.lexxicon.level.LevelInstrGrid;
+import com.cyberg.lexxicon.saga.SagaFactory;
+import com.cyberg.lexxicon.saga.SagaGrid;
+import com.cyberg.lexxicon.saga.SagaCore;
 import com.cyberg.lexxicon.menu.MenuCore;
 import com.cyberg.lexxicon.menu.MenuGrid;
 import com.cyberg.lexxicon.multitouch.DragEvent;
@@ -55,15 +57,18 @@ public class Main extends PApplet {
 	private DisplayWords mDisplayWords;
 	
 	public ObjectFactory mObjFactory;
-	public LevelFactory mLevelFactory;
+	public SagaFactory mSagaFactory;
 	
 	private GameCore mGameCore;
 	private MenuCore mMenuCore;
-	private LevelsCore mLevelsCore;
+	private SagaCore mSagaCore;
 
 	public LetterGrid mLetterGrid;
 	private MenuGrid mMenuGrid;
-	private LevelGrid mLevelGrid;
+	private SagaGrid mSagaGrid;
+
+	private LevelInstrGrid mLIGrid;
+	private LevelCore mLevelCore;
 	
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -84,7 +89,7 @@ public class Main extends PApplet {
 	  touch = new TouchProcessor(this);
 	  mPS = new ParticleSystem(CrossVariables.PHYSICS_GRAVITY, CrossVariables.PHYSICS_DRAG); 
 	  mObjFactory = new ObjectFactory(this);	  
-	  mLevelFactory = new LevelFactory(this);	  		
+	  mSagaFactory = new SagaFactory(this);
 	  int ofX = round(CrossVariables.GRID_OFFSET_X / CrossVariables.RESIZE_FACTOR_X);
 	  int ofY = round(CrossVariables.GRID_OFFSET_Y / CrossVariables.RESIZE_FACTOR_Y);
 	  mLetterGrid = new LetterGrid(this, mPS, mObjFactory, CrossVariables.GRID_NUMBER_OF_ROWS, CrossVariables.GRID_NUMBER_OF_COLS, ofX, ofY);
@@ -98,8 +103,12 @@ public class Main extends PApplet {
 	  int menuOfY = round(CrossVariables.MENU_GRID_OFFSET_Y / CrossVariables.RESIZE_FACTOR_Y);
 	  mMenuGrid = new MenuGrid(this, mPS, mObjFactory, 8, 8, menuOfX, menuOfY);
 	  mMenuCore = new MenuCore(this, mPS, sfondoMenu, mMenuGrid);
-	  mLevelGrid = new LevelGrid(this, mLevelFactory);
-	  mLevelsCore = new LevelsCore(this, sfondoMenu, mLevelGrid);
+	  mSagaGrid = new SagaGrid(this, mSagaFactory);
+	  mSagaCore = new SagaCore(this, sfondoMenu, mSagaGrid);
+    int liOfX = round((CrossVariables.SCREEN_STANDARD_X - (CrossVariables.LEVEL_INSTR_IMAGE_STANDARD_X * 10)) / 2 / CrossVariables.RESIZE_FACTOR_X);
+    int liOfY = round(CrossVariables.LEVEL_INSTR_GRID_OFFSET_Y / CrossVariables.RESIZE_FACTOR_Y);
+    mLIGrid = new LevelInstrGrid(this, mPS, mObjFactory, 10, 10, liOfX, liOfY);
+    mLevelCore = new LevelCore(this, mPS, sfondoMenu, mLIGrid);
 	  frameRate(30);
 	}
   
@@ -146,6 +155,9 @@ public class Main extends PApplet {
 	  		case CrossVariables.OVERALL_CREDITS:
 	  			drawCredits();
 	  			break;
+        case CrossVariables.OVERALL_LEVEL_MODE:
+          drawLevels();
+          break;
 	  	}
 	  }
 	  catch (Exception _Ex) {
@@ -158,7 +170,7 @@ public class Main extends PApplet {
   }
     
   private void drawSaga() throws Exception {
-  	mLevelsCore.update(mTouchX, mTouchY);
+		mSagaCore.update(mTouchX, mTouchY);
   }
     
   private void drawInfinite() throws Exception {
@@ -175,6 +187,10 @@ public class Main extends PApplet {
   	// Non Ancora Disponibile
   	mMenuCore.reset();
 		CrossVariables.OVERALL_STATE = CrossVariables.MENU_BOARD;
+  }
+
+  private void drawLevels() throws Exception {
+    mLevelCore.update(mTouchX, mTouchY);
   }
   
 	private void checkDB() {
@@ -223,8 +239,8 @@ public class Main extends PApplet {
 	}
 	
 	public void manageSagaBack() {
-  	switch (CrossVariables.LEVELS_STATE) {
-			case CrossVariables.LEVELS_BOARD:
+  	switch (CrossVariables.SAGA_STATE) {
+			case CrossVariables.SAGA_BOARD:
 				mGameCore.reset();
 				break;
   	}

@@ -113,13 +113,13 @@ public class CrossVariables {
   public static int BONUS_ANIM_OFFSET_Y = 0;
   public static int BONUS_ANIM_SIGN_Y = 1;
   // Bonus Chance 'n' over 1000 (Overall) - Initial Value
-  public static int BONUS_CHANCE = 150;
+  public static int BONUS_CHANCE = 15;
   // Bonus Chances percentage
-  public static final int BONUS_CHANCE_BOMB = 60;
-  public static final int BONUS_CHANCE_SUGGESTION = 30;
-  public static final int BONUS_CHANCE_ICE = 10;
-  public static final int BONUS_CHANCE_WIPE_LETTERS = 8;
-  public static final int BONUS_CHANCE_NEW_BOARD = 2;
+  public static final int BONUS_CHANCE_BOMB = 50;
+  public static final int BONUS_CHANCE_SUGGESTION = 23;
+  public static final int BONUS_CHANCE_ICE = 14;
+  public static final int BONUS_CHANCE_WIPE_LETTERS = 9;
+  public static final int BONUS_CHANCE_NEW_BOARD = 4;
   /*
   public static final int BONUS_CHANCE_SUGGESTION = 20;
   public static final int BONUS_CHANCE_BOMB = 20;
@@ -160,47 +160,66 @@ public class CrossVariables {
   // * ---------------------------------------------- *
   
   // * ---------------------------------------------- *
-  // * -         Levels Variables - Start           - *
+  // * -       Saga Board Variables - Start         - *
   // * ---------------------------------------------- *
-  public static final int LEVELS_ARROWS_DELAY = 1;
-  public static int LEVELS_ARROWS_FRAME_LEFT = -1;
-  public static final int LEVELS_USE_ANIM_FRAMES = 10;
-  public static int LEVELS_USE_FRAMES_LEFT = -1;
-  // Levels States
-  public static int LEVELS_STATE = -1;
-  public static final int LEVELS_BOARD = 0;
-  public static final int LEVELS_SELECTED_EFFECT = 1;
+  public static int SAGA_STATE = -1;
+  public static final int SAGA_BOARD = 0;
+  public static final int SAGA_SELECTED_EFFECT = 1;
 	// Phases Init Variables
-	public static boolean LEVELS_INIT = false;
+	public static boolean SAGA_INIT = false;
 	// Graphic Variables
-  public final static float LEVEL_IMAGE_STANDARD_X = 130;
-  public final static float LEVEL_IMAGE_STANDARD_Y = 130;
-  public final static float NUMBER_IMAGE_STANDARD_X = 50;
-  public final static float NUMBER_IMAGE_STANDARD_Y = 60;
-  public final static float STAR_IMAGE_STANDARD_X = 24;
-  public final static float STAR_IMAGE_STANDARD_Y = 24;
-  public final static int LEVEL_GRID_OFFSET_X = 30;
-  public final static int LEVEL_GRID_OFFSET_Y = 140;
-  public final static int LEVEL_GRID_SPACING_X = 15;
-  public final static int LEVEL_GRID_SPACING_Y = 25;
-  public final static int LEVEL_NUMBERS_OFFSET_X = 14;
-  public final static int LEVEL_NUMBERS_OFFSET_Y = 18;
-  public final static int LEVEL_STARS_OFFSET_X = 22;
-  public final static int LEVEL_STARS_OFFSET_Y = 103;
-  public final static int LEVEL_STARS_SPACING_X = 7;
-  // Current levels page
-  public static int LEVELS_CURRENT_PAGE = 1;
-  public final static int LEVELS_PER_PAGE = 9;
-  public final static int LEVELS_MAX_PAGES = 11;
+  public final static float SAGA_IMAGE_STANDARD_X = 130;
+  public final static float SAGA_IMAGE_STANDARD_Y = 130;
+  public final static float SAGA_NUMBER_IMAGE_STANDARD_X = 50;
+  public final static float SAGA_NUMBER_IMAGE_STANDARD_Y = 60;
+  public final static float SAGA_STAR_IMAGE_STANDARD_X = 24;
+  public final static float SAGA_STAR_IMAGE_STANDARD_Y = 24;
+  public final static int SAGA_GRID_OFFSET_X = 30;
+  public final static int SAGA_GRID_OFFSET_Y = 140;
+  public final static int SAGA_GRID_SPACING_X = 15;
+  public final static int SAGA_GRID_SPACING_Y = 25;
+  public final static int SAGA_NUMBERS_OFFSET_X = 14;
+  public final static int SAGA_NUMBERS_OFFSET_Y = 18;
+  public final static int SAGA_STARS_OFFSET_X = 22;
+  public final static int SAGA_STARS_OFFSET_Y = 103;
+  public final static int SAGA_STARS_SPACING_X = 7;
+  // Current level saga page
+  public static int SAGA_CURRENT_PAGE = 1;
+  public final static int SAGA_PER_PAGE = 9;
+  public final static int SAGA_MAX_PAGES = 11;
   // Levels Arrows
-  public final static float ARROW_IMAGE_STANDARD_X = 128;
-  public final static float ARROW_IMAGE_STANDARD_Y = 128;
-  public final static int ARROW_OFFSET_X = 30;
-  public final static int ARROW_OFFSET_Y = 600;
+  public final static float SAGA_ARROW_IMAGE_STANDARD_X = 128;
+  public final static float SAGA_ARROW_IMAGE_STANDARD_Y = 128;
+  public final static int SAGA_ARROW_OFFSET_X = 30;
+  public final static int SAGA_ARROW_OFFSET_Y = 600;
   // * ---------------------------------------------- *
-  // * -          Levels Variables - End            - *
+  // * -        Saga Board Variables - End          - *
   // * ---------------------------------------------- *
-	
+  // * ---------------------------------------------- *
+  // * -          Level Variables - Start           - *
+  // * ---------------------------------------------- *
+  // Level Selected Variables
+  // Phases Init Variables
+  public static boolean LEVEL_INIT = false;
+  public static int LEVELS_SELECTED_NUM = -1;
+  public final static int LEVELS_ANIM_FRAMES = 40;
+  public static int LEVELS_FRAMES_LEFT = -1;
+  public static int LEVELS_ANIM_OFFSET_X = 0;
+  public static int LEVELS_ANIM_SIGN_X = 1;
+  public static int LEVELS_ANIM_OFFSET_Y = 0;
+  public static int LEVELS_ANIM_SIGN_Y = 1;
+  // Graphic Variables for instructions
+  public final static float LEVEL_INSTR_IMAGE_STANDARD_X = 40;
+  public final static float LEVEL_INSTR_IMAGE_STANDARD_Y = 40;
+  public final static float LEVEL_INSTR_IMAGE_STANDARD_Y_SPACE = 5;
+                                             // 123456789-123456789-123456789-123456789-123456789-123456789-1234
+  public final static String[] LEVEL_INSTR = { "COMPOSE 3 WORDS BEFORE TIMER REACHES 0" };
+  public final static int LEVEL_INSTR_GRID_OFFSET_Y = 20;
+
+  // * ---------------------------------------------- *
+  // * -           Level Variables - End            - *
+  // * ---------------------------------------------- *
+
   // * ---------------------------------------------- *
   // * -         Game Variables - Start             - *
   // * ---------------------------------------------- *
@@ -319,7 +338,8 @@ public class CrossVariables {
   public static final int OVERALL_INFINITE = 2;
   public static final int OVERALL_VS = 3;
   public static final int OVERALL_CREDITS = 4;
-    
+  public static final int OVERALL_LEVEL_MODE = 5;
+
 	// DB Variables
 	public static KetaiSQLite DB;
 
@@ -348,7 +368,7 @@ public class CrossVariables {
     GAME_STATE = GAME_BOARD;
     OVERALL_STATE = OVERALL_MENU;
     MENU_STATE = MENU_BOARD;
-    LEVELS_STATE = LEVELS_BOARD;
+    SAGA_STATE = SAGA_BOARD;
 	  CrossVariables.TIMEOUT_TIME_LEFT = CrossVariables.TIMEOUT_STANDARD;
     float diffY = height - PHYSICS_MIN_Y;
     if (diffY > 1) {

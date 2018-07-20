@@ -1,11 +1,11 @@
-package com.cyberg.lexxicon.levels;
+package com.cyberg.lexxicon.saga;
 
 import java.util.ArrayList;
 
 import android.util.Log;
 
 import com.cyberg.lexxicon.environment.CrossVariables;
-import com.cyberg.lexxicon.structs.LevelStruct;
+import com.cyberg.lexxicon.structs.LevelSagaStruct;
 import com.cyberg.lexxicon.structs.NumberStruct;
 import com.cyberg.lexxicon.structs.StarStruct;
 
@@ -13,24 +13,24 @@ import ketai.data.KetaiSQLite;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-public class LevelFactory {
+public class SagaFactory {
   
-  private LevelStruct mLevel;      
+  private LevelSagaStruct mLevel;
   private PApplet mFather;
   private ArrayList<NumberStruct> mLevelNumbers = new ArrayList<NumberStruct>();
   private StarStruct mStar = null;
   
-  public LevelFactory(PApplet aFather) {
+  public SagaFactory(PApplet aFather) {
     mFather = aFather;
-    createLevel();
-    createLevelsObj();
+    createLSS();
+    createLSObj();
   }
   
-  public void createLevel() {
-    mLevel = new LevelStruct(mFather, "LevelTile.png");
+  public void createLSS() {
+    mLevel = new LevelSagaStruct(mFather, "LevelTile.png");
   }
   
-  public void createLevelsObj() {
+  public void createLSObj() {
   	for (int i=0; i<10; i++) {
   		String anImage = "";
   		switch (i) {
@@ -70,8 +70,8 @@ public class LevelFactory {
   	mStar = new StarStruct(mFather, "Star.png");
   }
     
-  public LevelStruct getLevel(int aLevel) {
-  	LevelStruct aReturnValue = null;
+  public LevelSagaStruct getLSS(int aLevel) {
+  	LevelSagaStruct aReturnValue = null;
   	int decadi = 0;
   	int unita = aLevel;
 		if (aLevel >= 10) {
@@ -81,10 +81,10 @@ public class LevelFactory {
 		ArrayList<NumberStruct> numbers = getNumbers(decadi, unita);
 		ArrayList<StarStruct> stars = getStars(aLevel);
 		try {
-			aReturnValue = new LevelStruct((PImage)mLevel.getImage().clone(), numbers, stars, aLevel);
+			aReturnValue = new LevelSagaStruct((PImage)mLevel.getImage().clone(), numbers, stars, aLevel);
 		}
 	  catch (Exception _Ex) {
-	  	Log.v("LevelFactory", "getLevel", _Ex);
+	  	Log.v("SagaFactory", "getLSS", _Ex);
 	  	return null;
 	  }
 		return aReturnValue;
@@ -101,7 +101,7 @@ public class LevelFactory {
   		aReturnValue.add(aNS);
   	}
 	  catch (Exception _Ex) {
-	  	Log.v("LevelFactory", "getNumbers", _Ex);
+	  	Log.v("SagaFactory", "getNumbers", _Ex);
 	  	return null;
 	  }
   	return aReturnValue;

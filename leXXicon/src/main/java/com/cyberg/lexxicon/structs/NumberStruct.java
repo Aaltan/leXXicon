@@ -16,7 +16,7 @@ public class NumberStruct {
 	public NumberStruct(PApplet aFather, String anImage, int number) {
 		mFather = aFather;
     mImage = mFather.loadImage(anImage);
-    mImage.resize(PApplet.round(CrossVariables.NUMBER_IMAGE_STANDARD_X / CrossVariables.RESIZE_FACTOR_X), PApplet.round(CrossVariables.NUMBER_IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y));
+    mImage.resize(PApplet.round(CrossVariables.SAGA_NUMBER_IMAGE_STANDARD_X / CrossVariables.RESIZE_FACTOR_X), PApplet.round(CrossVariables.SAGA_NUMBER_IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y));
     mImage.loadPixels();
     mImageW = mImage.width;
     mImageH = mImage.height;
