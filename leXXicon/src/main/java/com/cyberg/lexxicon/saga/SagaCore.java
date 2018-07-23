@@ -2,6 +2,7 @@ package com.cyberg.lexxicon.saga;
 
 import com.cyberg.lexxicon.Main;
 import com.cyberg.lexxicon.environment.CrossVariables;
+import com.cyberg.lexxicon.structs.ObjectFactory;
 
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -13,13 +14,16 @@ public class SagaCore {
 	private PImage mArrowLeft;
 	private PImage mArrowRight;
 	private SagaGrid mSagaGrid;
+	private ObjectFactory mObjFactory;
+	private SagaLevelInstr mSagaLevelInstr;
 	private int mActualFC = -1;
 	private int mDelay = 1;
 
-	public SagaCore(Main aFather, PImage sfondo, SagaGrid sagaGrid) {
+	public SagaCore(Main aFather, PImage sfondo, SagaGrid sagaGrid, ObjectFactory objFactory) {
 		mFather = aFather;
 		mSfondo = sfondo;
 		mSagaGrid = sagaGrid;
+		mObjFactory = objFactory;
     mArrowLeft = mFather.loadImage("left.png");
     mArrowLeft.resize(PApplet.round(CrossVariables.SAGA_ARROW_IMAGE_STANDARD_X / CrossVariables.RESIZE_FACTOR_X), PApplet.round(CrossVariables.SAGA_ARROW_IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y));
     mArrowLeft.loadPixels();		
@@ -33,14 +37,20 @@ public class SagaCore {
   	switch (CrossVariables.SAGA_STATE) {
   		case CrossVariables.SAGA_BOARD:
   			drawSagaBoard(aTX, aTY);
+				if (mActualFC == -1 || mFather.frameCount > (mActualFC + mDelay)) {
+					checkArrows(aTX, aTY);
+				}
   			break;
   		case CrossVariables.SAGA_SELECTED_EFFECT:
   			drawSagaEffect(aTX, aTY);
+				if (mActualFC == -1 || mFather.frameCount > (mActualFC + mDelay)) {
+					checkArrows(aTX, aTY);
+				}
   			break;
+			case CrossVariables.SAGA_LEVEL_INSTRUCTION:
+				drawSagaInstructions(aTX, aTY);
+				break;
   	}
-  	if (mActualFC == -1 || mFather.frameCount > (mActualFC + mDelay)) {
-      checkArrows(aTX, aTY);
-    }
   }
     
   private void drawSagaBoard(float aTX, float aTY) throws Exception {
@@ -79,12 +89,23 @@ public class SagaCore {
   	}
   }
 
+  private void drawSagaInstructions(float aTX, float aTY) {
+	  mFather.image(mSfondo, 0, 0);
+	  mSagaLevelInstr.update(aTX, aTY);
+  }
+
   public void startLevel() {
-    // CrossVariables.OVERALL_STATE = CrossVariables.OVERALL_MENU;
-    CrossVariables.OVERALL_STATE = CrossVariables.OVERALL_LEVEL_MODE;
+    CrossVariables.SAGA_STATE = CrossVariables.SAGA_LEVEL_INSTRUCTION;
+    mSagaLevelInstr = new SagaLevelInstr(mFather, mSfondo, CrossVariables.LEVELS_SELECTED_NUM, mObjFactory);
+  }
+
+  public void reset() {
+    CrossVariables.MENU_STATE = CrossVariables.MENU_BOARD;
     CrossVariables.SAGA_STATE = CrossVariables.SAGA_BOARD;
+    CrossVariables.SAGA_CURRENT_PAGE = 1;
+    CrossVariables.LEVEL_INSTR_LETTERS_SHOWN = 0;
+    CrossVariables.LEVEL_INIT = false;
     CrossVariables.LEVELS_SELECTED_NUM = -1;
-    CrossVariables.SAGA_INIT = false;
   }
 
   private void levelSelect(float aTX, float aTY) {

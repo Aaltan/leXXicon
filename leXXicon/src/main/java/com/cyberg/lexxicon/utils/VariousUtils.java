@@ -8,7 +8,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.util.Log;
 
 import com.cyberg.lexxicon.Main;
 
@@ -17,7 +21,7 @@ public class VariousUtils {
   public static int getPoints(Main aFather, String composedWord) {
   	int aReturnValue = 0;
   	for (int i=0; i<composedWord.length(); i++) {
-  		aReturnValue += aFather.mObjFactory.getLetter((composedWord.charAt(i) - 64), false).getPoints(); 
+  		aReturnValue += aFather.mObjFactory.getLetter((composedWord.substring(i, i+1)), false).getPoints();
   	}
   	return aReturnValue;
   }
@@ -38,7 +42,7 @@ public class VariousUtils {
 		final String logString = new String(log.toString());
 		File dir = new File (Environment.getExternalStorageDirectory() + "/debug/");
 		dir.mkdirs();
-		File file = new File(dir, "WBLogCat.txt");
+		File file = new File(dir, "leXXlg.txt");
 		try {		
 			FileOutputStream fOut = new FileOutputStream(file);
 			OutputStreamWriter osw = new OutputStreamWriter(fOut); 
@@ -52,5 +56,42 @@ public class VariousUtils {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-	}	  
+	}
+
+	public static String justify(String aString, int places, String filler, boolean left) {
+		String aReturnValue = aString;
+		if (aReturnValue.length() > places) {
+			if (left) {
+				aReturnValue = aReturnValue.substring(aReturnValue.length() - places);
+			} else {
+				aReturnValue = aReturnValue.substring(0, places);
+			}
+		}
+		for (int i = aString.length(); i < places; i++) {
+			if (left) {
+				aReturnValue = filler + aReturnValue;
+			}
+			else {
+				aReturnValue = aReturnValue + filler;
+			}
+		}
+		return aReturnValue;
+	}
+
+  public static String getAppVersion(Context aContext) {
+    String aReturnValue = "leXXicon";
+    PackageManager aPM = aContext.getPackageManager();
+    try {
+      PackageInfo aPI = aPM.getPackageInfo(aContext.getPackageName(), 0);
+      aReturnValue += " V." + aPI.versionName;
+    }
+    catch (Exception _Ex) {
+      Log.v("getAppVersion", "Errore in retrieve Package Info", _Ex);
+    }
+    return aReturnValue;
+  }
+
+  public static boolean isNumeric(String s) {
+    return s != null && s.matches("[-+]?\\d*\\.?\\d+");
+  }
 }

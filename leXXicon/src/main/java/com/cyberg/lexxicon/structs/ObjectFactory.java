@@ -5,8 +5,6 @@ import java.util.Collections;
 
 import android.util.Log;
 
-import com.cyberg.lexxicon.environment.CrossVariables;
-
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -39,9 +37,20 @@ public class ObjectFactory {
   private LetterStruct Y;  
   private LetterStruct X;  
   private LetterStruct W;
-      
+
+  private LetterStruct _0;
+  private LetterStruct _1;
+  private LetterStruct _2;
+  private LetterStruct _3;
+  private LetterStruct _4;
+  private LetterStruct _5;
+  private LetterStruct _6;
+  private LetterStruct _7;
+  private LetterStruct _8;
+  private LetterStruct _9;
+
   private PApplet mFather;
-  private int[] mLetterBag;
+  private String[] mLetterBag;
   
   public ObjectFactory(PApplet aFather) {
     mFather = aFather;
@@ -50,171 +59,181 @@ public class ObjectFactory {
   }
   
   public void createLetters() {
-    EMPTY = new LetterStruct(mFather, "Empty.png", 0, 0, CrossVariables.EMPTY_LETTER, " ");
-    A = new LetterStruct(mFather, "A.png", 1, 9, CrossVariables.A_LETTER, "A");
-    B = new LetterStruct(mFather, "B.png", 5, 2, CrossVariables.B_LETTER, "B");
-    C = new LetterStruct(mFather, "C.png", 2, 2, CrossVariables.C_LETTER, "C");
-    D = new LetterStruct(mFather, "D.png", 5, 4, CrossVariables.D_LETTER, "D");
-    E = new LetterStruct(mFather, "E.png", 1, 12, CrossVariables.E_LETTER, "E");
-    F = new LetterStruct(mFather, "F.png", 5, 2, CrossVariables.F_LETTER, "F");
-    G = new LetterStruct(mFather, "G.png", 8, 3, CrossVariables.G_LETTER, "G");
-    H = new LetterStruct(mFather, "H.png", 8, 2, CrossVariables.H_LETTER, "H");
-    I = new LetterStruct(mFather, "I.png", 1, 9, CrossVariables.I_LETTER, "I");
-    L = new LetterStruct(mFather, "L.png", 3, 4, CrossVariables.L_LETTER, "L");
-    M = new LetterStruct(mFather, "M.png", 3, 2, CrossVariables.M_LETTER, "M");
-    N = new LetterStruct(mFather, "N.png", 3, 6, CrossVariables.N_LETTER, "N");
-    O = new LetterStruct(mFather, "O.png", 1, 8, CrossVariables.O_LETTER, "O");
-    P = new LetterStruct(mFather, "P.png", 5, 2, CrossVariables.P_LETTER, "P");
-    Q = new LetterStruct(mFather, "Q.png", 10, 1, CrossVariables.Q_LETTER, "Q");
-    R = new LetterStruct(mFather, "R.png", 2, 6, CrossVariables.R_LETTER, "R");
-    S = new LetterStruct(mFather, "S.png", 2, 4, CrossVariables.S_LETTER, "S");
-    T = new LetterStruct(mFather, "T.png", 2, 6, CrossVariables.T_LETTER, "T");
-    U = new LetterStruct(mFather, "U.png", 3, 4, CrossVariables.U_LETTER, "U");
-    V = new LetterStruct(mFather, "V.png", 5, 2, CrossVariables.V_LETTER, "V");
-    Z = new LetterStruct(mFather, "Z.png", 8, 1, CrossVariables.Z_LETTER, "Z");
-    J = new LetterStruct(mFather, "J.png", 10, 1, CrossVariables.J_LETTER, "J");
-    K = new LetterStruct(mFather, "K.png", 5, 1, CrossVariables.K_LETTER, "K");
-    Y = new LetterStruct(mFather, "Y.png", 4, 2, CrossVariables.Y_LETTER, "Y");
-    X = new LetterStruct(mFather, "X.png", 10, 1, CrossVariables.X_LETTER, "X");
-    W = new LetterStruct(mFather, "W.png", 10, 2, CrossVariables.W_LETTER, "W");
+    EMPTY = new LetterStruct(mFather, "Empty.png", 0, 0, " ");
+    A = new LetterStruct(mFather, "A.png", 1, 9, "A");
+    B = new LetterStruct(mFather, "B.png", 5, 2, "B");
+    C = new LetterStruct(mFather, "C.png", 2, 2, "C");
+    D = new LetterStruct(mFather, "D.png", 5, 4, "D");
+    E = new LetterStruct(mFather, "E.png", 1, 12, "E");
+    F = new LetterStruct(mFather, "F.png", 5, 2, "F");
+    G = new LetterStruct(mFather, "G.png", 8, 3, "G");
+    H = new LetterStruct(mFather, "H.png", 8, 2, "H");
+    I = new LetterStruct(mFather, "I.png", 1, 9, "I");
+    L = new LetterStruct(mFather, "L.png", 3, 4, "L");
+    M = new LetterStruct(mFather, "M.png", 3, 3, "M");
+    N = new LetterStruct(mFather, "N.png", 3, 3, "N");
+    O = new LetterStruct(mFather, "O.png", 1, 8, "O");
+    P = new LetterStruct(mFather, "P.png", 5, 2, "P");
+    Q = new LetterStruct(mFather, "Q.png", 10, 1, "Q");
+    R = new LetterStruct(mFather, "R.png", 2, 6, "R");
+    S = new LetterStruct(mFather, "S.png", 2, 4, "S");
+    T = new LetterStruct(mFather, "T.png", 2, 6, "T");
+    U = new LetterStruct(mFather, "U.png", 3, 4, "U");
+    V = new LetterStruct(mFather, "V.png", 5, 2, "V");
+    Z = new LetterStruct(mFather, "Z.png", 8, 1, "Z");
+    J = new LetterStruct(mFather, "J.png", 10, 1, "J");
+    K = new LetterStruct(mFather, "K.png", 5, 1, "K");
+    Y = new LetterStruct(mFather, "Y.png", 4, 2, "Y");
+    X = new LetterStruct(mFather, "X.png", 10, 1, "X");
+    W = new LetterStruct(mFather, "W.png", 10, 2, "W");
+    _0 = new LetterStruct(mFather, "0G.png", 0, 0, "0");
+    _1 = new LetterStruct(mFather, "1G.png", 1, 0, "1");
+    _2 = new LetterStruct(mFather, "2G.png", 2, 0, "2");
+    _3 = new LetterStruct(mFather, "3G.png", 3, 0, "3");
+    _4 = new LetterStruct(mFather, "4G.png", 4, 0, "4");
+    _5 = new LetterStruct(mFather, "5G.png", 5, 0, "5");
+    _6 = new LetterStruct(mFather, "6G.png", 6, 0, "6");
+    _7 = new LetterStruct(mFather, "7G.png", 7, 0, "7");
+    _8 = new LetterStruct(mFather, "8G.png", 8, 0, "8");
+    _9 = new LetterStruct(mFather, "9G.png", 9, 0, "9");
   }
-  
+
   private void createLetterBag() {
-  	int[] anArray = new int[A.getChance() + B.getChance() + C.getChance() + D.getChance() + E.getChance() +
-  	                        F.getChance() + G.getChance() + H.getChance() + I.getChance() +
-  	                        L.getChance() + M.getChance() + N.getChance() + O.getChance() +
-  	                        P.getChance() + Q.getChance() + R.getChance() + S.getChance() +
-  	                        T.getChance() + U.getChance() + V.getChance() + Z.getChance() +
-  	                        J.getChance() + K.getChance() + Y.getChance() + X.getChance() + W.getChance()];
+  	String[] anArray = new String[A.getChance() + B.getChance() + C.getChance() + D.getChance() + E.getChance() +
+                                  F.getChance() + G.getChance() + H.getChance() + I.getChance() +
+                                  L.getChance() + M.getChance() + N.getChance() + O.getChance() +
+                                  P.getChance() + Q.getChance() + R.getChance() + S.getChance() +
+                                  T.getChance() + U.getChance() + V.getChance() + Z.getChance() +
+                                  J.getChance() + K.getChance() + Y.getChance() + X.getChance() + W.getChance()];
   	int startIdx = 0;
   	int stopIdx = A.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.A_LETTER;
+  		anArray[i] = "A";
   	}
   	startIdx = stopIdx;
   	stopIdx += B.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.B_LETTER;
+  		anArray[i] = "B";
   	}
   	startIdx = stopIdx;
   	stopIdx += C.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.C_LETTER;
+  		anArray[i] = "C";
   	}
   	startIdx = stopIdx;
   	stopIdx += D.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.D_LETTER;
+  		anArray[i] = "D";
   	}
   	startIdx = stopIdx;
   	stopIdx += E.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.E_LETTER;
+  		anArray[i] = "E";
   	}
   	startIdx = stopIdx;
   	stopIdx += F.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.F_LETTER;
+  		anArray[i] = "F";
   	}
   	startIdx = stopIdx;
   	stopIdx += G.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.G_LETTER;
+  		anArray[i] = "G";
   	}
   	startIdx = stopIdx;
   	stopIdx += H.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.H_LETTER;
+  		anArray[i] = "H";
   	}
   	startIdx = stopIdx;
   	stopIdx += I.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.I_LETTER;
+  		anArray[i] = "I";
   	}
   	startIdx = stopIdx;
   	stopIdx += L.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.L_LETTER;
+  		anArray[i] = "L";
   	}
   	startIdx = stopIdx;
   	stopIdx += M.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.M_LETTER;
+  		anArray[i] = "M";
   	}
   	startIdx = stopIdx;
   	stopIdx += N.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.N_LETTER;
+  		anArray[i] = "N";
   	}
   	startIdx = stopIdx;
   	stopIdx += O.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.O_LETTER;
+  		anArray[i] = "O";
   	}
   	startIdx = stopIdx;
   	stopIdx += P.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.P_LETTER;
+  		anArray[i] = "P";
   	}
   	startIdx = stopIdx;
   	stopIdx += Q.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.Q_LETTER;
+  		anArray[i] = "Q";
   	}
   	startIdx = stopIdx;
   	stopIdx += R.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.R_LETTER;
+  		anArray[i] = "R";
   	}
   	startIdx = stopIdx;
   	stopIdx += S.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.S_LETTER;
+  		anArray[i] = "S";
   	}
   	startIdx = stopIdx;
   	stopIdx += T.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.T_LETTER;
+  		anArray[i] = "T";
   	}
   	startIdx = stopIdx;
   	stopIdx += U.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.U_LETTER;
+  		anArray[i] = "U";
   	}
   	startIdx = stopIdx;
   	stopIdx += V.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.V_LETTER;
+  		anArray[i] = "V";
   	}
   	startIdx = stopIdx;
   	stopIdx += Z.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.Z_LETTER;
+  		anArray[i] = "Z";
   	}
   	startIdx = stopIdx;
   	stopIdx += J.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.J_LETTER;
+  		anArray[i] = "J";
   	}
   	startIdx = stopIdx;
   	stopIdx += K.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.K_LETTER;
+  		anArray[i] = "K";
   	}
   	startIdx = stopIdx;
   	stopIdx += Y.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.Y_LETTER;
+  		anArray[i] = "Y";
   	}
   	startIdx = stopIdx;
   	stopIdx += X.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.X_LETTER;
+  		anArray[i] = "X";
   	}
   	startIdx = stopIdx;
   	stopIdx += W.getChance();
   	for (int i=startIdx; i<stopIdx; i++) {
-  		anArray[i] = CrossVariables.W_LETTER;
+  		anArray[i] = "W";
   	}
   	Collections.shuffle(Arrays.asList(anArray));
   	mLetterBag = anArray;
@@ -231,201 +250,277 @@ public class ObjectFactory {
     return getLetter(mLetterBag[rndLetter]);
   }
   
-  public LetterStruct getLetter(int aLetter) {
+  public LetterStruct getLetter(String aLetter) {
   	return getLetter(aLetter, true);
   }
-  
-  public LetterStruct getLetter(int aLetter, boolean clone) {
+
+  public LetterStruct getLetter(String aLetter, boolean clone) {
+    int asciiVal = -1;
+    try {
+      asciiVal = (int) aLetter.charAt(0);
+    }
+    catch (NumberFormatException _NFE) {}
+
   	try {
-	    switch (aLetter) {
-      	case CrossVariables.EMPTY_LETTER:
+	    switch (asciiVal) {
+      	case 32:                     // " " Ascii Space Value
       		if (clone) {
-      			return new LetterStruct((PImage)EMPTY.getImage().clone(), EMPTY.getPoints(), EMPTY.getChance(), EMPTY.getLetterNumber(), EMPTY.getLetter());
+      			return new LetterStruct((PImage)EMPTY.getImage().clone(), EMPTY.getPoints(), EMPTY.getChance(), EMPTY.getLetter());
       		}
       		else {
       			return EMPTY;
       		}
-	      case CrossVariables.A_LETTER:
+        case 48:                     // "0"
+          if (clone) {
+            return new LetterStruct((PImage)_0.getImage().clone(), _0.getPoints(), _0.getChance(), _0.getLetter());
+          }
+          else {
+            return _0;
+          }
+        case 49:                     // "1"
+          if (clone) {
+            return new LetterStruct((PImage)_1.getImage().clone(), _1.getPoints(), _1.getChance(), _1.getLetter());
+          }
+          else {
+            return _1;
+          }
+        case 50:                     // "2"
+          if (clone) {
+            return new LetterStruct((PImage)_2.getImage().clone(), _2.getPoints(), _2.getChance(), _2.getLetter());
+          }
+          else {
+            return _2;
+          }
+        case 51:                     // "3"
+          if (clone) {
+            return new LetterStruct((PImage)_3.getImage().clone(), _3.getPoints(), _3.getChance(), _3.getLetter());
+          }
+          else {
+            return _3;
+          }
+        case 52:                     // "4"
+          if (clone) {
+            return new LetterStruct((PImage)_4.getImage().clone(), _4.getPoints(), _4.getChance(), _4.getLetter());
+          }
+          else {
+            return _4;
+          }
+        case 53:                     // "5"
+          if (clone) {
+            return new LetterStruct((PImage)_5.getImage().clone(), _5.getPoints(), _5.getChance(), _5.getLetter());
+          }
+          else {
+            return _5;
+          }
+        case 54:                     // "6"
+          if (clone) {
+            return new LetterStruct((PImage)_6.getImage().clone(), _6.getPoints(), _6.getChance(), _6.getLetter());
+          }
+          else {
+            return _6;
+          }
+        case 55:                     // "7"
+          if (clone) {
+            return new LetterStruct((PImage)_7.getImage().clone(), _7.getPoints(), _7.getChance(), _7.getLetter());
+          }
+          else {
+            return _7;
+          }
+        case 56:                     // "8"
+          if (clone) {
+            return new LetterStruct((PImage)_8.getImage().clone(), _8.getPoints(), _8.getChance(), _8.getLetter());
+          }
+          else {
+            return _8;
+          }
+        case 57:                     // "9"
+          if (clone) {
+            return new LetterStruct((PImage)_9.getImage().clone(), _9.getPoints(), _9.getChance(), _9.getLetter());
+          }
+          else {
+            return _9;
+          }
+	      case 65:                    // "A"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)A.getImage().clone(), A.getPoints(), A.getChance(), A.getLetterNumber(), A.getLetter());
+	      		return new LetterStruct((PImage)A.getImage().clone(), A.getPoints(), A.getChance(), A.getLetter());
 	      	}
 	      	else {
 	      		return A;
 	      	}
-	      case CrossVariables.B_LETTER:
+	      case 66:                    // "B"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)B.getImage().clone(), B.getPoints(), B.getChance(), B.getLetterNumber(), B.getLetter());
+	      		return new LetterStruct((PImage)B.getImage().clone(), B.getPoints(), B.getChance(), B.getLetter());
 	      	}
 	      	else {
 	      		return B;
 	      	}
-	      case CrossVariables.C_LETTER:
+	      case 67:                    // "C"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)C.getImage().clone(), C.getPoints(), C.getChance(), C.getLetterNumber(), C.getLetter());
+	      		return new LetterStruct((PImage)C.getImage().clone(), C.getPoints(), C.getChance(), C.getLetter());
 	      	}
 	      	else {
 	      		return C;
 	      	}
-	      case CrossVariables.D_LETTER:
+	      case 68:                    // "d"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)D.getImage().clone(), D.getPoints(), D.getChance(), D.getLetterNumber(), D.getLetter());
+	      		return new LetterStruct((PImage)D.getImage().clone(), D.getPoints(), D.getChance(), D.getLetter());
 	      	}
 	      	else {
 	      		return D;
 	      	}
-	      case CrossVariables.E_LETTER:
+	      case 69:                    // "E"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)E.getImage().clone(), E.getPoints(), E.getChance(), E.getLetterNumber(), E.getLetter());
+	      		return new LetterStruct((PImage)E.getImage().clone(), E.getPoints(), E.getChance(), E.getLetter());
 	      	}
 	      	else {
 	      		return E;
 	      	}
-	      case CrossVariables.F_LETTER:
+	      case 70:                    // "F"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)F.getImage().clone(), F.getPoints(), F.getChance(), F.getLetterNumber(), F.getLetter());
+	      		return new LetterStruct((PImage)F.getImage().clone(), F.getPoints(), F.getChance(), F.getLetter());
 	      	}
 	      	else {
 	      		return F;
 	      	}
-	      case CrossVariables.G_LETTER:
+	      case 71:                    // "G"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)G.getImage().clone(), G.getPoints(), G.getChance(), G.getLetterNumber(), G.getLetter());
+	      		return new LetterStruct((PImage)G.getImage().clone(), G.getPoints(), G.getChance(), G.getLetter());
 	      	}
 	      	else {
 	      		return G;
 	      	}
-	      case CrossVariables.H_LETTER:
+	      case 72:                    // "H"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)H.getImage().clone(), H.getPoints(), H.getChance(), H.getLetterNumber(), H.getLetter());
+	      		return new LetterStruct((PImage)H.getImage().clone(), H.getPoints(), H.getChance(), H.getLetter());
 	      	}
 	      	else {
 	      		return H;
 	      	}
-	      case CrossVariables.I_LETTER:
+	      case 73:                    // "I"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)I.getImage().clone(), I.getPoints(), I.getChance(), I.getLetterNumber(), I.getLetter());
+	      		return new LetterStruct((PImage)I.getImage().clone(), I.getPoints(), I.getChance(), I.getLetter());
 	      	}
 	      	else {
 	      		return I;
 	      	}
-	      case CrossVariables.L_LETTER:
+        case 74:                    // "J"
+          if (clone) {
+            return new LetterStruct((PImage)J.getImage().clone(), J.getPoints(), J.getChance(), J.getLetter());
+          }
+          else {
+            return J;
+          }
+        case 75:                    // "K"
+          if (clone) {
+            return new LetterStruct((PImage)K.getImage().clone(), K.getPoints(), K.getChance(), K.getLetter());
+          }
+          else {
+            return K;
+          }
+	      case 76:                    // "L"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)L.getImage().clone(), L.getPoints(), L.getChance(), L.getLetterNumber(), L.getLetter());
+	      		return new LetterStruct((PImage)L.getImage().clone(), L.getPoints(), L.getChance(), L.getLetter());
 	      	}
 	      	else {
 	      		return L;
 	      	}
-	      case CrossVariables.M_LETTER:
+	      case 77:                    // "M"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)M.getImage().clone(), M.getPoints(), M.getChance(), M.getLetterNumber(), M.getLetter());
+	      		return new LetterStruct((PImage)M.getImage().clone(), M.getPoints(), M.getChance(), M.getLetter());
 	      	}
 	      	else {
 	      		return M;
 	      	}
-	      case CrossVariables.N_LETTER:
+	      case 78:                    // "N"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)N.getImage().clone(), N.getPoints(), N.getChance(), N.getLetterNumber(), N.getLetter());
+	      		return new LetterStruct((PImage)N.getImage().clone(), N.getPoints(), N.getChance(), N.getLetter());
 	      	}
 	      	else {
 	      		return N;
 	      	}
-	      case CrossVariables.O_LETTER:
+	      case 79:                    // "O"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)O.getImage().clone(), O.getPoints(), O.getChance(), O.getLetterNumber(), O.getLetter());
+	      		return new LetterStruct((PImage)O.getImage().clone(), O.getPoints(), O.getChance(), O.getLetter());
 	      	}
 	      	else {
 	      		return O;
 	      	}
-	      case CrossVariables.P_LETTER:
+	      case 80:                    // "P"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)P.getImage().clone(), P.getPoints(), P.getChance(), P.getLetterNumber(), P.getLetter());
+	      		return new LetterStruct((PImage)P.getImage().clone(), P.getPoints(), P.getChance(), P.getLetter());
 	      	}
 	      	else {
 	      		return P;
 	      	}
-	      case CrossVariables.Q_LETTER:
+	      case 81:                    // "Q"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)Q.getImage().clone(), Q.getPoints(), Q.getChance(), Q.getLetterNumber(), Q.getLetter());
+	      		return new LetterStruct((PImage)Q.getImage().clone(), Q.getPoints(), Q.getChance(), Q.getLetter());
 	      	}
 	      	else {
 	      		return Q;
 	      	}
-	      case CrossVariables.R_LETTER:
+	      case 82:                    // "R"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)R.getImage().clone(), R.getPoints(), R.getChance(), R.getLetterNumber(), R.getLetter());
+	      		return new LetterStruct((PImage)R.getImage().clone(), R.getPoints(), R.getChance(), R.getLetter());
 	      	}
 	      	else {
 	      		return R;
 	      	}
-	      case CrossVariables.S_LETTER:
+	      case 83:                    // "S"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)S.getImage().clone(), S.getPoints(), S.getChance(), S.getLetterNumber(), S.getLetter());
+	      		return new LetterStruct((PImage)S.getImage().clone(), S.getPoints(), S.getChance(), S.getLetter());
 	      	}
 	      	else {
 	      		return S;
 	      	}
-	      case CrossVariables.T_LETTER:
+	      case 84:                    // "T"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)T.getImage().clone(), T.getPoints(), T.getChance(), T.getLetterNumber(), T.getLetter());
+	      		return new LetterStruct((PImage)T.getImage().clone(), T.getPoints(), T.getChance(), T.getLetter());
 	      	}
 	      	else {
 	      		return T;
 	      	}
-	      case CrossVariables.U_LETTER:
+	      case 85:                    // "U"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)U.getImage().clone(), U.getPoints(), U.getChance(), U.getLetterNumber(), U.getLetter());
+	      		return new LetterStruct((PImage)U.getImage().clone(), U.getPoints(), U.getChance(), U.getLetter());
 	      	}
 	      	else {
 	      		return U;
 	      	}
-	      case CrossVariables.V_LETTER:
+	      case 86:                    // "V"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)V.getImage().clone(), V.getPoints(), V.getChance(), V.getLetterNumber(), V.getLetter());
+	      		return new LetterStruct((PImage)V.getImage().clone(), V.getPoints(), V.getChance(), V.getLetter());
 	      	}
 	      	else {
 	      		return V;
 	      	}
-	      case CrossVariables.Z_LETTER:
+        case 87:                    // "W"
+          if (clone) {
+            return new LetterStruct((PImage)W.getImage().clone(), W.getPoints(), W.getChance(), W.getLetter());
+          }
+          else {
+            return W;
+          }
+        case 88:                    // "X"
+          if (clone) {
+            return new LetterStruct((PImage)X.getImage().clone(), X.getPoints(), X.getChance(), X.getLetter());
+          }
+          else {
+            return X;
+          }
+        case 89:                    // "Y"
+          if (clone) {
+            return new LetterStruct((PImage)Y.getImage().clone(), Y.getPoints(), Y.getChance(), Y.getLetter());
+          }
+          else {
+            return Y;
+          }
+	      case 90:                    // "Z"
 	      	if (clone) {
-	      		return new LetterStruct((PImage)Z.getImage().clone(), Z.getPoints(), Z.getChance(), Z.getLetterNumber(), Z.getLetter());
+	      		return new LetterStruct((PImage)Z.getImage().clone(), Z.getPoints(), Z.getChance(), Z.getLetter());
 	      	}
 	      	else {
 	      		return Z;
-	      	}
-	      case CrossVariables.J_LETTER:
-	      	if (clone) {
-	      		return new LetterStruct((PImage)J.getImage().clone(), J.getPoints(), J.getChance(), J.getLetterNumber(), J.getLetter());
-	      	}
-	      	else {
-	      		return J;
-	      	}
-	      case CrossVariables.K_LETTER:
-	      	if (clone) {
-	      		return new LetterStruct((PImage)K.getImage().clone(), K.getPoints(), K.getChance(), K.getLetterNumber(), K.getLetter());
-	      	}
-	      	else {
-	      		return K;
-	      	}
-	      case CrossVariables.X_LETTER:
-	      	if (clone) {
-	      		return new LetterStruct((PImage)X.getImage().clone(), X.getPoints(), X.getChance(), X.getLetterNumber(), X.getLetter());
-	      	}
-	      	else {
-	      		return X;
-	      	}
-	      case CrossVariables.Y_LETTER:
-	      	if (clone) {
-	      		return new LetterStruct((PImage)Y.getImage().clone(), Y.getPoints(), Y.getChance(), Y.getLetterNumber(), Y.getLetter());
-	      	}
-	      	else {
-	      		return Y;
-	      	}
-	      case CrossVariables.W_LETTER:
-	      	if (clone) {
-	      		return new LetterStruct((PImage)W.getImage().clone(), W.getPoints(), W.getChance(), W.getLetterNumber(), W.getLetter());
-	      	}
-	      	else {
-	      		return W;
 	      	}
 	      default:
 	      	return null;
@@ -435,5 +530,5 @@ public class ObjectFactory {
 	  	Log.v("***********", "getLetter", _Ex);
 	  	return null;
 	  }
-  }  
+  }
 }

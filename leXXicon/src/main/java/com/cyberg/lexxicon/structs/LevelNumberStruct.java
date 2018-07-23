@@ -5,7 +5,7 @@ import processing.core.PImage;
 
 import com.cyberg.lexxicon.environment.CrossVariables;
 
-public class NumberStruct {
+public class LevelNumberStruct {
 	
 	private PApplet mFather = null;
 	private PImage mImage = null;
@@ -13,7 +13,7 @@ public class NumberStruct {
   private int mImageH = 0;  
   private int mNumber = -1;
 	
-	public NumberStruct(PApplet aFather, String anImage, int number) {
+	public LevelNumberStruct(PApplet aFather, String anImage, int number) {
 		mFather = aFather;
     mImage = mFather.loadImage(anImage);
     mImage.resize(PApplet.round(CrossVariables.SAGA_NUMBER_IMAGE_STANDARD_X / CrossVariables.RESIZE_FACTOR_X), PApplet.round(CrossVariables.SAGA_NUMBER_IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y));
@@ -23,7 +23,7 @@ public class NumberStruct {
     mNumber = number;
 	}
 	
-	public NumberStruct(PImage anImage, int number) {
+	public LevelNumberStruct(PImage anImage, int number) {
     mImage = anImage;
     mImageW = mImage.width;
     mImageH = mImage.height;

@@ -17,7 +17,7 @@ public class LevelSagaStruct {
   private boolean mSelected = false;
   private boolean mMarked = false;
   private int mDurationFrame = -1;
-  private ArrayList<NumberStruct> mNumbers = null;
+  private ArrayList<LevelNumberStruct> mNumbers = null;
   private ArrayList<StarStruct> mStars = null;
 	
 	public LevelSagaStruct(PApplet aFather, String anImage) {
@@ -29,7 +29,7 @@ public class LevelSagaStruct {
     mImageH = mImage.height;
 	}
 	
-	public LevelSagaStruct(PImage anImage, ArrayList<NumberStruct> numbers, ArrayList<StarStruct> stars, int levelNum) {
+	public LevelSagaStruct(PImage anImage, ArrayList<LevelNumberStruct> numbers, ArrayList<StarStruct> stars, int levelNum) {
 		mImage = anImage;
     mImageW = mImage.width;
     mImageH = mImage.height;
@@ -66,7 +66,7 @@ public class LevelSagaStruct {
   	return mMarked;
   }
   
-  public ArrayList<NumberStruct> getNumbers() {
+  public ArrayList<LevelNumberStruct> getNumbers() {
   	return mNumbers;
   }
   
@@ -98,7 +98,7 @@ public class LevelSagaStruct {
   	mMarked = aValue;
   }  
   
-  public void setNumbers(ArrayList<NumberStruct> aValue) {
+  public void setNumbers(ArrayList<LevelNumberStruct> aValue) {
   	mNumbers = aValue;
   }
   

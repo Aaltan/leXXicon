@@ -82,7 +82,7 @@ public class MenuCore {
 			CrossVariables.MENU_USE_FRAMES_LEFT = CrossVariables.MENU_USE_ANIM_FRAMES;
 			// Mark all row as 'selected'
 			for (int i=0; i<mMenuGrid.getCols(); i++) {
-				LetterStruct aLS = (LetterStruct)mMenuGrid.getSlots()[selectedRow][i].getObject();
+				LetterStruct aLS = (LetterStruct) mMenuGrid.getSlots()[selectedRow][i].getObject();
 				aLS.setSelected(true);  				
 				aLS.setDurationFrame(CrossVariables.OBJECTS_ANIMATION_FRAMES);
 				if (!aLS.getMarked()) {

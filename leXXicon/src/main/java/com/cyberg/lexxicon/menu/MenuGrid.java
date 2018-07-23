@@ -19,14 +19,14 @@ public class MenuGrid {
 	private int mVSpace;
 	private MenuObjectSlot[][] mSlots;
 	public ObjectFactory mObjFactory;
-	private int[][] mArrayMenu = { { CrossVariables.T_LETTER, CrossVariables.U_LETTER, CrossVariables.T_LETTER, CrossVariables.O_LETTER, CrossVariables.R_LETTER, CrossVariables.I_LETTER, CrossVariables.A_LETTER, CrossVariables.L_LETTER },
-																 { 0, CrossVariables.V_LETTER, CrossVariables.E_LETTER, CrossVariables.R_LETTER, CrossVariables.S_LETTER, CrossVariables.U_LETTER, CrossVariables.S_LETTER, 0 },
-																 { CrossVariables.I_LETTER, CrossVariables.N_LETTER, CrossVariables.F_LETTER, CrossVariables.I_LETTER, CrossVariables.N_LETTER, CrossVariables.I_LETTER, CrossVariables.T_LETTER, CrossVariables.E_LETTER },
-																 { 0, 0, CrossVariables.S_LETTER, CrossVariables.A_LETTER, CrossVariables.G_LETTER, CrossVariables.A_LETTER, 0, 0 },
-																 { 0, 0, 0, 0, 0, 0, 0, 0 },
-																 { 0, 0, CrossVariables.M_LETTER, CrossVariables.E_LETTER, CrossVariables.N_LETTER, CrossVariables.U_LETTER, 0, 0 },
-																 { 0, 0, 0, 0, 0, 0, 0, 0 },
-																 { 0, 0, 0, 0, 0, 0, 0, 0 } };
+	private String[] mArrayMenu = { "TUTORIAL",
+									 						    " VERSUS " ,
+																  "INFINITE" ,
+																  "  SAGA  " ,
+																  "        " ,
+																  "  MENU  " ,
+																  "        " ,
+																  "        " };
 
 	public MenuGrid(Main aFather, ParticleSystem aPS,
 									ObjectFactory objFactory, int numRows, int numCols, int leftX, int topY) {
@@ -49,8 +49,8 @@ public class MenuGrid {
 	public void fillGrid() {
 		int offsetY = mFather.height;
 		for (int r = 0; r < mNumRows; r++) {
-			for (int c = 0; c < mNumCols; c++) {
-				LetterStruct aLetter = mObjFactory.getLetter(mArrayMenu[r][c]);
+			for (int c = 0; c < mArrayMenu[r].length(); c++) {
+				LetterStruct aLetter = mObjFactory.getLetter(mArrayMenu[r].substring(c, c+1));
 				aLetter.setImageH(PApplet.round(CrossVariables.MENU_IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y));
 				aLetter.setImageW(PApplet.round(CrossVariables.MENU_IMAGE_STANDARD_X / CrossVariables.RESIZE_FACTOR_X));
 				// Metto in negativo l'offset Y, in quanto devono partire da fuori

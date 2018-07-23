@@ -5,9 +5,6 @@ import java.util.ArrayList;
 
 import com.cyberg.lexxicon.Main;
 import com.cyberg.lexxicon.environment.CrossVariables;
-import com.cyberg.lexxicon.game.BonusPlate;
-import com.cyberg.lexxicon.game.LetterGrid;
-import com.cyberg.lexxicon.game.SuggestionPlate;
 import com.cyberg.lexxicon.structs.LetterStruct;
 import com.cyberg.lexxicon.testutils.DisplayWords;
 import com.lancer.android.processing.traer.physics.ParticleSystem;
@@ -291,7 +288,7 @@ public class GameCore {
 		  		ArrayList<float[]> slotsToWipe = new ArrayList<float[]>();
 		  		for (int r=0; r<CrossVariables.GRID_NUMBER_OF_ROWS; r++) {
 		  			for (int c=0; c<CrossVariables.GRID_NUMBER_OF_COLS; c++) {
-				  		LetterStruct gLS = (LetterStruct)mLetterGrid.getSlots()[r][c].getObject();
+							LetterStruct gLS = (LetterStruct)mLetterGrid.getSlots()[r][c].getObject();
 				  		if (gLS.getLetter().trim().equalsIgnoreCase(letterChoosed.trim())) {
 				  			// Get x and y
 				  			float[] xY = { mLetterGrid.getSlots()[r][c].getCenterX(),

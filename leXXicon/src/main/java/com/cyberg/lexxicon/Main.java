@@ -9,8 +9,6 @@ import com.cyberg.lexxicon.game.GameCore;
 import com.cyberg.lexxicon.game.LetterGrid;
 import com.cyberg.lexxicon.game.PointsPlate;
 import com.cyberg.lexxicon.game.SuggestionPlate;
-import com.cyberg.lexxicon.level.LevelCore;
-import com.cyberg.lexxicon.level.LevelInstrGrid;
 import com.cyberg.lexxicon.saga.SagaFactory;
 import com.cyberg.lexxicon.saga.SagaGrid;
 import com.cyberg.lexxicon.saga.SagaCore;
@@ -67,9 +65,6 @@ public class Main extends PApplet {
 	private MenuGrid mMenuGrid;
 	private SagaGrid mSagaGrid;
 
-	private LevelInstrGrid mLIGrid;
-	private LevelCore mLevelCore;
-	
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -104,11 +99,7 @@ public class Main extends PApplet {
 	  mMenuGrid = new MenuGrid(this, mPS, mObjFactory, 8, 8, menuOfX, menuOfY);
 	  mMenuCore = new MenuCore(this, mPS, sfondoMenu, mMenuGrid);
 	  mSagaGrid = new SagaGrid(this, mSagaFactory);
-	  mSagaCore = new SagaCore(this, sfondoMenu, mSagaGrid);
-    int liOfX = round((CrossVariables.SCREEN_STANDARD_X - (CrossVariables.LEVEL_INSTR_IMAGE_STANDARD_X * 10)) / 2 / CrossVariables.RESIZE_FACTOR_X);
-    int liOfY = round(CrossVariables.LEVEL_INSTR_GRID_OFFSET_Y / CrossVariables.RESIZE_FACTOR_Y);
-    mLIGrid = new LevelInstrGrid(this, mPS, mObjFactory, 10, 10, liOfX, liOfY);
-    mLevelCore = new LevelCore(this, mPS, sfondoMenu, mLIGrid);
+	  mSagaCore = new SagaCore(this, sfondoMenu, mSagaGrid, mObjFactory);
 	  frameRate(30);
 	}
   
@@ -155,9 +146,6 @@ public class Main extends PApplet {
 	  		case CrossVariables.OVERALL_CREDITS:
 	  			drawCredits();
 	  			break;
-        case CrossVariables.OVERALL_LEVEL_MODE:
-          drawLevels();
-          break;
 	  	}
 	  }
 	  catch (Exception _Ex) {
@@ -189,10 +177,6 @@ public class Main extends PApplet {
 		CrossVariables.OVERALL_STATE = CrossVariables.MENU_BOARD;
   }
 
-  private void drawLevels() throws Exception {
-    mLevelCore.update(mTouchX, mTouchY);
-  }
-  
 	private void checkDB() {
 		CrossVariables.DB = new KetaiSQLite( this);
 		if (CrossVariables.DB.connect()) {
@@ -239,11 +223,8 @@ public class Main extends PApplet {
 	}
 	
 	public void manageSagaBack() {
-  	switch (CrossVariables.SAGA_STATE) {
-			case CrossVariables.SAGA_BOARD:
-				mGameCore.reset();
-				break;
-  	}
+		mSagaCore.reset();
+		CrossVariables.OVERALL_STATE = CrossVariables.MENU_BOARD;
 	}
 
 	public void manageInfiniteBack() {

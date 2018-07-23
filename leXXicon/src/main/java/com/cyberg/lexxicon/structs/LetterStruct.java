@@ -10,7 +10,6 @@ public class LetterStruct {
   private PImage mImage;
   private int mPoints;
   private int mChance;
-  private int mLetterNumber;
   private String mLetter = "";
   private int mBonus = 0;
   private int mImageW = 0;
@@ -20,8 +19,7 @@ public class LetterStruct {
   private int mDurationFrame = -1;
   private PApplet mFather;
   
-  public LetterStruct(PApplet aFather, String anImage, int points, 
-  										int chance, int letterNumber, String letter) {
+  public LetterStruct(PApplet aFather, String anImage, int points, int chance, String letter) {
     mFather = aFather;
     mImage = mFather.loadImage(anImage);
     mImage.resize(PApplet.round(CrossVariables.IMAGE_STANDARD_X / CrossVariables.RESIZE_FACTOR_X), PApplet.round(CrossVariables.IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y));
@@ -30,17 +28,15 @@ public class LetterStruct {
     mImageH = mImage.height;
     mPoints = points;
     mChance = chance;
-    mLetterNumber = letterNumber;
     mLetter = letter;
   }
     
-  public LetterStruct(PImage anImage, int points, int chance, int letterNumber, String letter) {
+  public LetterStruct(PImage anImage, int points, int chance, String letter) {
     mImage = anImage;
     mImageW = mImage.width;
     mImageH = mImage.height;
     mPoints = points;
     mChance = chance;
-    mLetterNumber = letterNumber;
     mLetter = letter;
   }
   
@@ -56,10 +52,6 @@ public class LetterStruct {
     return mChance;
   }
 
-  public int getLetterNumber() {
-    return mLetterNumber;
-  }
-  
   public String getLetter() {
     return mLetter;
   }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.cyberg.lexxicon.environment.CrossVariables;
 import com.cyberg.lexxicon.structs.LevelSagaStruct;
-import com.cyberg.lexxicon.structs.NumberStruct;
+import com.cyberg.lexxicon.structs.LevelNumberStruct;
 import com.cyberg.lexxicon.structs.StarStruct;
 
 import processing.core.PApplet;
@@ -40,7 +40,7 @@ public class SagaObjectSlot {
 								 (CrossVariables.SAGA_GRID_OFFSET_Y / CrossVariables.RESIZE_FACTOR_Y) +
 									levelRow * (CrossVariables.SAGA_IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y) +
 									levelRow * (CrossVariables.SAGA_GRID_SPACING_Y / CrossVariables.RESIZE_FACTOR_Y));
-		ArrayList<NumberStruct> nS = aLS.getNumbers();
+		ArrayList<LevelNumberStruct> nS = aLS.getNumbers();
 		ArrayList<StarStruct> sS = aLS.getStars();
 		if ((CrossVariables.STATUS_LEVELSCOMPLETED + 1) < levelNum) {
 			mFather.tint(255, 128);
@@ -84,7 +84,7 @@ public class SagaObjectSlot {
     if (levelNum == CrossVariables.LEVELS_SELECTED_NUM) {
       offsetY += CrossVariables.LEVELS_ANIM_OFFSET_Y;
     }
-    ArrayList<NumberStruct> nS = aLS.getNumbers();
+    ArrayList<LevelNumberStruct> nS = aLS.getNumbers();
     ArrayList<StarStruct> sS = aLS.getStars();
     if ((CrossVariables.STATUS_LEVELSCOMPLETED + 1) < levelNum) {
       mFather.tint(255, 128);

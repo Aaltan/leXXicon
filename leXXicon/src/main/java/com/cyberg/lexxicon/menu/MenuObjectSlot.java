@@ -89,7 +89,7 @@ public class MenuObjectSlot {
 		LetterStruct aLS = (LetterStruct) mObject;
 		int offsetX = (PApplet.round(CrossVariables.MENU_IMAGE_STANDARD_X / CrossVariables.RESIZE_FACTOR_X) - aLS.getImageW()) / 2;
 		int offsetY = (PApplet.round(CrossVariables.MENU_IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y) - aLS.getImageH()) / 2;
-		if (aLS.getLetterNumber() != CrossVariables.EMPTY_LETTER) {
+		if (!aLS.getLetter().trim().equalsIgnoreCase("")) {
 			mFather.image(aLS.getImage(), offsetX + pArray[0].position().x(), offsetY + pArray[0].position().y(), aLS.getImageW(), aLS.getImageH());
 		}
 		mFather.noTint();
@@ -121,7 +121,7 @@ public class MenuObjectSlot {
 		}
 		int offsetX = (PApplet.round(CrossVariables.MENU_IMAGE_STANDARD_X / CrossVariables.RESIZE_FACTOR_X) - aLS.getImageW()) / 2;
 		int offsetY = (PApplet.round(CrossVariables.MENU_IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y) - aLS.getImageH()) / 2;
-		if (aLS.getLetterNumber() != CrossVariables.EMPTY_LETTER) {
+		if (!aLS.getLetter().trim().equalsIgnoreCase("")) {
 			mFather.image(aLS.getImage(), offsetX + pArray[0].position().x(), offsetY + pArray[0].position().y(), aLS.getImageW(), aLS.getImageH());
 		}
 		mFather.noTint();

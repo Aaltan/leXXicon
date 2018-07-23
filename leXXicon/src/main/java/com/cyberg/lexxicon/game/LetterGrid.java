@@ -148,7 +148,7 @@ public class LetterGrid {
 			int eR = CrossVariables.MARKED_FOR_SWAP.get(i).getRow();
 			int eC = CrossVariables.MARKED_FOR_SWAP.get(i).getCol();
 			mSlots[eR][eC].setFull(true);
-			LetterStruct aLS = (LetterStruct)mSlots[eR][eC].getObject();
+			LetterStruct aLS = (LetterStruct) mSlots[eR][eC].getObject();
 			aLS.setMarked(false);
 			aLS.setSelected(false);
 			aLS.setImageW(PApplet.round(CrossVariables.IMAGE_STANDARD_X / CrossVariables.RESIZE_FACTOR_X));

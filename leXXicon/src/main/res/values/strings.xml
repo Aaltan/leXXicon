@@ -6,4 +6,8 @@
     <string name="bItaliano">"Italian Dictionary"</string>
     <string name="bBergamo">"Bergamo Dictionary"</string>
 
+    <string name= "lvltitle">"BOARD "</string>
+    <string name= "lvlstart">"   PLAY   "</string>
+    <string name= "lvl001title">"GIMME 3"</string>
+    <string name= "lvl001content">"COMPOSE 3 WORDS TO COMPLETE LEVEL"</string>
 </resources>

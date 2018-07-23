@@ -165,6 +165,7 @@ public class CrossVariables {
   public static int SAGA_STATE = -1;
   public static final int SAGA_BOARD = 0;
   public static final int SAGA_SELECTED_EFFECT = 1;
+  public static final int SAGA_LEVEL_INSTRUCTION = 2;
 	// Phases Init Variables
 	public static boolean SAGA_INIT = false;
 	// Graphic Variables
@@ -209,12 +210,14 @@ public class CrossVariables {
   public static int LEVELS_ANIM_OFFSET_Y = 0;
   public static int LEVELS_ANIM_SIGN_Y = 1;
   // Graphic Variables for instructions
-  public final static float LEVEL_INSTR_IMAGE_STANDARD_X = 40;
-  public final static float LEVEL_INSTR_IMAGE_STANDARD_Y = 40;
-  public final static float LEVEL_INSTR_IMAGE_STANDARD_Y_SPACE = 5;
-                                             // 123456789-123456789-123456789-123456789-123456789-123456789-1234
-  public final static String[] LEVEL_INSTR = { "COMPOSE 3 WORDS BEFORE TIMER REACHES 0" };
-  public final static int LEVEL_INSTR_GRID_OFFSET_Y = 20;
+  public final static int LEVEL_INSTR_DISPLAY_DELAY = 1;
+  public static int LEVEL_INSTR_LETTERS_SHOWN = 0;
+  public final static int LEVEL_INSTR_GRID_ROWS = 14;
+  public final static int LEVEL_INSTR_GRID_COLS = 10;
+  public final static float LEVEL_INSTR_IMAGE_STANDARD_X = 35;
+  public final static float LEVEL_INSTR_IMAGE_STANDARD_Y = 35;
+  public final static float LEVEL_INSTR_IMAGE_STANDARD_X_SPACE = 4;
+  public final static float LEVEL_INSTR_IMAGE_STANDARD_Y_SPACE = 4;
 
   // * ---------------------------------------------- *
   // * -           Level Variables - End            - *
@@ -296,36 +299,7 @@ public class CrossVariables {
   public final static int TRIPLE_LETTER = 2;
   public final static int DOUBLE_WORD = 3;
   public final static int TRIPLE_WORD = 4;
-  
-  // Latters Value
-  public final static int EMPTY_LETTER = 0;
-  public final static int A_LETTER = 1;
-  public final static int B_LETTER = 2;
-  public final static int C_LETTER = 3;
-  public final static int D_LETTER = 4;
-  public final static int E_LETTER = 5;
-  public final static int F_LETTER = 6;
-  public final static int G_LETTER = 7;
-  public final static int H_LETTER = 8;
-  public final static int I_LETTER = 9;
-  public final static int J_LETTER = 10;
-  public final static int K_LETTER = 11;
-  public final static int L_LETTER = 12;
-  public final static int M_LETTER = 13;
-  public final static int N_LETTER = 14;
-  public final static int O_LETTER = 15;
-  public final static int P_LETTER = 16;
-  public final static int Q_LETTER = 17;
-  public final static int R_LETTER = 18;
-  public final static int S_LETTER = 19;
-  public final static int T_LETTER = 20;
-  public final static int U_LETTER = 21;
-  public final static int V_LETTER = 22;
-  public final static int W_LETTER = 23;
-  public final static int X_LETTER = 24;
-  public final static int Y_LETTER = 25;
-  public final static int Z_LETTER = 26;
-  
+
   public static ArrayList<EmptySlot> MARKED_FOR_SWAP = new ArrayList<EmptySlot>();
   public static ArrayList<EmptySlot> MARKED_FOR_FILL = new ArrayList<EmptySlot>();
   

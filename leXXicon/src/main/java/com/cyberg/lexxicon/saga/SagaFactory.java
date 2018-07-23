@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import android.util.Log;
 
 import com.cyberg.lexxicon.environment.CrossVariables;
-import com.cyberg.lexxicon.structs.LevelSagaStruct;
-import com.cyberg.lexxicon.structs.NumberStruct;
+import com.cyberg.lexxicon.structs.LevelNumberStruct;
 import com.cyberg.lexxicon.structs.StarStruct;
+import com.cyberg.lexxicon.structs.LevelSagaStruct;
 
 import ketai.data.KetaiSQLite;
 import processing.core.PApplet;
@@ -17,7 +17,7 @@ public class SagaFactory {
   
   private LevelSagaStruct mLevel;
   private PApplet mFather;
-  private ArrayList<NumberStruct> mLevelNumbers = new ArrayList<NumberStruct>();
+  private ArrayList<LevelNumberStruct> mLevelNumbers = new ArrayList<LevelNumberStruct>();
   private StarStruct mStar = null;
   
   public SagaFactory(PApplet aFather) {
@@ -65,7 +65,7 @@ public class SagaFactory {
   				anImage = "9.png";
   				break;
   		}
-  		mLevelNumbers.add(new NumberStruct(mFather, anImage, i));
+  		mLevelNumbers.add(new LevelNumberStruct(mFather, anImage, i));
   	}
   	mStar = new StarStruct(mFather, "Star.png");
   }
@@ -78,7 +78,7 @@ public class SagaFactory {
 			decadi = PApplet.floor(aLevel / 10);
 			unita = aLevel - (decadi * 10);
 		}
-		ArrayList<NumberStruct> numbers = getNumbers(decadi, unita);
+		ArrayList<LevelNumberStruct> numbers = getNumbers(decadi, unita);
 		ArrayList<StarStruct> stars = getStars(aLevel);
 		try {
 			aReturnValue = new LevelSagaStruct((PImage)mLevel.getImage().clone(), numbers, stars, aLevel);
@@ -90,14 +90,14 @@ public class SagaFactory {
 		return aReturnValue;
   }
   
-  private ArrayList<NumberStruct> getNumbers(int decadi, int unita) {
-  	ArrayList<NumberStruct> aReturnValue = new ArrayList<NumberStruct>();
+  private ArrayList<LevelNumberStruct> getNumbers(int decadi, int unita) {
+  	ArrayList<LevelNumberStruct> aReturnValue = new ArrayList<LevelNumberStruct>();
   	try {
 	  	if (decadi > 0) {
-	  		NumberStruct aNS = new NumberStruct((PImage)mLevelNumbers.get(decadi).getImage().clone(), decadi);
+	  		LevelNumberStruct aNS = new LevelNumberStruct((PImage)mLevelNumbers.get(decadi).getImage().clone(), decadi);
 	  		aReturnValue.add(aNS);
 			}
-  		NumberStruct aNS = new NumberStruct((PImage)mLevelNumbers.get(unita).getImage().clone(), unita);
+  		LevelNumberStruct aNS = new LevelNumberStruct((PImage)mLevelNumbers.get(unita).getImage().clone(), unita);
   		aReturnValue.add(aNS);
   	}
 	  catch (Exception _Ex) {

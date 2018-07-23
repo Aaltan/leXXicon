@@ -6,4 +6,8 @@
     <string name="bItaliano">"Dizionario Italiano"</string>
     <string name="bBergamo">"Dizionario Bergamasco"</string>
 
+    <string name= "lvltitle">"SCHEMA "</string>
+    <string name= "lvlstart">"   PLAY   "</string>
+    <string name= "lvl001title">"DAMMI UN 3"</string>
+    <string name= "lvl001content">"FORMA 3 PAROLE PER COMPLETARE IL LIVELLO"</string>
 </resources>
