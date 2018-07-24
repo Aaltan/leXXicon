@@ -1,10 +1,14 @@
-package com.cyberg.lexxicon.game;
+package com.cyberg.lexxicon.game.levels;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import com.cyberg.lexxicon.Main;
 import com.cyberg.lexxicon.environment.CrossVariables;
+import com.cyberg.lexxicon.game.BonusPlate;
+import com.cyberg.lexxicon.game.LetterGrid;
+import com.cyberg.lexxicon.game.SuggestionPlate;
+import com.cyberg.lexxicon.game.WordPlate;
 import com.cyberg.lexxicon.structs.LetterStruct;
 import com.cyberg.lexxicon.testutils.DisplayWords;
 import com.lancer.android.processing.traer.physics.ParticleSystem;
@@ -12,7 +16,7 @@ import com.lancer.android.processing.traer.physics.ParticleSystem;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-public class GameCore {
+public class LevelsGameCore {
 	
 	private Main mFather;
 	private ParticleSystem mPS;
@@ -22,9 +26,9 @@ public class GameCore {
 	private SuggestionPlate mSuggestionPlate;
 	private DisplayWords mDisplayWords;
 	
-	public GameCore(Main aFather, ParticleSystem aPS, PImage sfondo,
-									LetterGrid letterGrid, BonusPlate bonusPlate,
-									SuggestionPlate suggestionPlate, DisplayWords displayWords) {
+	public LevelsGameCore(Main aFather, ParticleSystem aPS, PImage sfondo,
+												LetterGrid letterGrid, BonusPlate bonusPlate,
+												SuggestionPlate suggestionPlate, DisplayWords displayWords) {
 		mFather = aFather;
 		mPS = aPS;
 		mSfondo = sfondo;

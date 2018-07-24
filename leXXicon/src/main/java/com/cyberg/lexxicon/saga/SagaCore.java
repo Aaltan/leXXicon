@@ -50,6 +50,9 @@ public class SagaCore {
 			case CrossVariables.SAGA_LEVEL_INSTRUCTION:
 				drawSagaInstructions(aTX, aTY);
 				break;
+      case CrossVariables.SAGA_LEVEL_START_ANIM:
+        drawSagaLevelStartAnim(aTX, aTY);
+        break;
   	}
   }
     
@@ -68,7 +71,7 @@ public class SagaCore {
       CrossVariables.LEVELS_ANIM_OFFSET_Y = 0;
       CrossVariables.LEVELS_ANIM_SIGN_X = 1;
       CrossVariables.LEVELS_ANIM_SIGN_Y = 1;
-  		startLevel();
+  		showInstructions();
   	}
   	else {
   		mSagaGrid.updateSelected(aTX, aTY);
@@ -94,7 +97,18 @@ public class SagaCore {
 	  mSagaLevelInstr.update(aTX, aTY);
   }
 
-  public void startLevel() {
+  private void drawSagaLevelStartAnim(float aTX, float aTY) {
+    mFather.image(mSfondo, 0, 0);
+    if (CrossVariables.LEVEL_INSTR_ANIM_PLAY_LEFT >= -1) {
+      CrossVariables.LEVEL_INSTR_ANIM_PLAY_LEFT--;
+      mSagaLevelInstr.updateSelected(aTX, aTY);
+    }
+    else {
+      startLevel();
+    }
+  }
+
+  public void showInstructions() {
     CrossVariables.SAGA_STATE = CrossVariables.SAGA_LEVEL_INSTRUCTION;
     mSagaLevelInstr = new SagaLevelInstr(mFather, mSfondo, CrossVariables.LEVELS_SELECTED_NUM, mObjFactory);
   }
@@ -106,6 +120,16 @@ public class SagaCore {
     CrossVariables.LEVEL_INSTR_LETTERS_SHOWN = 0;
     CrossVariables.LEVEL_INIT = false;
     CrossVariables.LEVELS_SELECTED_NUM = -1;
+  }
+
+  public void startLevel() {
+    CrossVariables.MENU_STATE = CrossVariables.MENU_BOARD;
+    CrossVariables.SAGA_STATE = CrossVariables.SAGA_BOARD;
+    CrossVariables.SAGA_CURRENT_PAGE = 1;
+    CrossVariables.LEVEL_INSTR_LETTERS_SHOWN = 0;
+    CrossVariables.LEVEL_INIT = false;
+    CrossVariables.LEVELS_SELECTED_NUM = -1;
+    CrossVariables.OVERALL_STATE = CrossVariables.OVERALL_INFINITE;
   }
 
   private void levelSelect(float aTX, float aTY) {

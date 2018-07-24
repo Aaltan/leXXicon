@@ -93,7 +93,7 @@ public class MenuGrid {
 		for (int c = 0; c < mNumCols; c++) {
 			for (int r = 0; r < mNumRows; r++) {
 				if (r == 5) {
-					mFather.tint(160, 160, 160);
+					mFather.tint(200, 200, 200);
 				}
 				mSlots[r][c].updateSelected(r, c, tX, tY);
 			}

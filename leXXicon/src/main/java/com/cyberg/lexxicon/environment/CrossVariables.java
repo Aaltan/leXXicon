@@ -166,6 +166,7 @@ public class CrossVariables {
   public static final int SAGA_BOARD = 0;
   public static final int SAGA_SELECTED_EFFECT = 1;
   public static final int SAGA_LEVEL_INSTRUCTION = 2;
+  public static final int SAGA_LEVEL_START_ANIM = 3;
 	// Phases Init Variables
 	public static boolean SAGA_INIT = false;
 	// Graphic Variables
@@ -211,6 +212,8 @@ public class CrossVariables {
   public static int LEVELS_ANIM_SIGN_Y = 1;
   // Graphic Variables for instructions
   public final static int LEVEL_INSTR_DISPLAY_DELAY = 1;
+  public final static int LEVEL_INSTR_ANIM_PLAY_FRAMES = 10;
+  public static int LEVEL_INSTR_ANIM_PLAY_LEFT = -1;
   public static int LEVEL_INSTR_LETTERS_SHOWN = 0;
   public final static int LEVEL_INSTR_GRID_ROWS = 14;
   public final static int LEVEL_INSTR_GRID_COLS = 10;

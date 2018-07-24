@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import com.cyberg.lexxicon.environment.CrossVariables;
 import com.cyberg.lexxicon.game.BonusFactory;
 import com.cyberg.lexxicon.game.BonusPlate;
-import com.cyberg.lexxicon.game.GameCore;
+import com.cyberg.lexxicon.game.infinite.InfiniteGameCore;
 import com.cyberg.lexxicon.game.LetterGrid;
 import com.cyberg.lexxicon.game.PointsPlate;
 import com.cyberg.lexxicon.game.SuggestionPlate;
+import com.cyberg.lexxicon.game.levels.LevelsGameCore;
 import com.cyberg.lexxicon.saga.SagaFactory;
 import com.cyberg.lexxicon.saga.SagaGrid;
 import com.cyberg.lexxicon.saga.SagaCore;
@@ -57,7 +58,8 @@ public class Main extends PApplet {
 	public ObjectFactory mObjFactory;
 	public SagaFactory mSagaFactory;
 	
-	private GameCore mGameCore;
+	private InfiniteGameCore mInfiniteGameCore;
+	private LevelsGameCore mLevelsGameCore;
 	private MenuCore mMenuCore;
 	private SagaCore mSagaCore;
 
@@ -93,7 +95,9 @@ public class Main extends PApplet {
 	  mBonusFactory = new BonusFactory(this);
 	  mBonusPlate = new BonusPlate(this);
 	  mSuggestionPlate = new SuggestionPlate(this);
-	  mGameCore = new GameCore(this, mPS, sfondo, mLetterGrid, mBonusPlate, mSuggestionPlate, mDisplayWords);
+	  mInfiniteGameCore = new InfiniteGameCore(this, mPS, sfondo, mLetterGrid, mBonusPlate, mSuggestionPlate, mDisplayWords);
+	  // To-Do - Modify LevelsGameCore (now just a clone of InfiniteGameCore)
+		mLevelsGameCore = new LevelsGameCore(this, mPS, sfondo, mLetterGrid, mBonusPlate, mSuggestionPlate, mDisplayWords);
 	  int menuOfX = round((CrossVariables.SCREEN_STANDARD_X - (CrossVariables.MENU_IMAGE_STANDARD_X * 8)) / 2 / CrossVariables.RESIZE_FACTOR_X);
 	  int menuOfY = round(CrossVariables.MENU_GRID_OFFSET_Y / CrossVariables.RESIZE_FACTOR_Y);
 	  mMenuGrid = new MenuGrid(this, mPS, mObjFactory, 8, 8, menuOfX, menuOfY);
@@ -140,6 +144,9 @@ public class Main extends PApplet {
 	  		case CrossVariables.OVERALL_INFINITE:
 	  			drawInfinite();
 	  			break;
+				case CrossVariables.OVERALL_LEVEL_MODE:
+					drawLevelMode();
+					break;
 	  		case CrossVariables.OVERALL_VS:
 	  			drawVS();
 	  			break;
@@ -162,10 +169,14 @@ public class Main extends PApplet {
   }
     
   private void drawInfinite() throws Exception {
-  	mGameCore.update(mTouchX, mTouchY);
+  	mInfiniteGameCore.update(mTouchX, mTouchY);
   }
-  
-  private void drawVS() throws Exception {
+
+	private void drawLevelMode() throws Exception {
+		mLevelsGameCore.update(mTouchX, mTouchY);
+	}
+
+	private void drawVS() throws Exception {
   	// Non Ancora Disponibile
   	mMenuCore.reset();
 		CrossVariables.OVERALL_STATE = CrossVariables.MENU_BOARD;
@@ -230,13 +241,13 @@ public class Main extends PApplet {
 	public void manageInfiniteBack() {
   	switch (CrossVariables.GAME_STATE) {
 			case CrossVariables.GAME_BOARD:
-				mGameCore.reset();
+				mInfiniteGameCore.reset();
 				break;
 			case CrossVariables.GAME_WORD_LIST:
 				CrossVariables.GAME_STATE = CrossVariables.GAME_BOARD;
 				break;
 			case CrossVariables.GAME_OVER:
-				mGameCore.reset();
+				mInfiniteGameCore.reset();
 				break;
   	}
 	}
