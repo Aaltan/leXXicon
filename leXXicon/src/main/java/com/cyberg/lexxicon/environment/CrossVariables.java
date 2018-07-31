@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.cyberg.lexxicon.game.EmptySlot;
 import com.cyberg.lexxicon.game.PointsPlate;
 import com.cyberg.lexxicon.game.WordPlate;
+import com.cyberg.lexxicon.game.levels.LevelInfos;
 import com.cyberg.lexxicon.solver.DictionaryEntry;
 import com.cyberg.lexxicon.solver.Solver;
 
@@ -32,7 +33,8 @@ public class CrossVariables {
   public final static float BONUS_STANDARD_X = 70;
   public final static float BONUS_STANDARD_Y = 70;
   public final static float SUGGESTION_PLATE_X = 400;
-  public final static float SUGGESTION_PLATE_Y = 125;  
+  public final static float SUGGESTION_PLATE_Y = 110;
+  public final static float SUGGESTION_OFFSET_Y = 10;
   public final static float TOUCH_OFFSET_X = 10;
   public final static float TOUCH_OFFSET_Y = 10;
   public final static int OBJECTS_ANIMATION_FRAMES = 10;
@@ -222,6 +224,24 @@ public class CrossVariables {
   public final static float LEVEL_INSTR_IMAGE_STANDARD_X_SPACE = 4;
   public final static float LEVEL_INSTR_IMAGE_STANDARD_Y_SPACE = 4;
 
+  // Level Configuration Section
+  public static final int LEVEL_TYPE_WORDS = 0;
+  public static final int LEVEL_TYPE_FIND = 1;
+  public static final int LEVEL_TYPE_BINARY = 2;
+  public static final int LEVEL_TYPE_MATH = 3;
+
+  public static int MATH_ACTUAL_MODE = -1;
+  public static final int MATH_MODE_ADD = 0;
+  public static final int MATH_MODE_SUBTRACT = 1;
+  public static final int MATH_MODE_MULTIPY = 2;
+  public static final int MATH_MODE_DIVIDE = 3;
+
+  public static int LEVEL_TYPE_ACTUAL_GAME = -1;
+  public static String LEVEL_WORD_TO_FIND = "";
+  public static int LEVEL_NUMBER_TO_FIND = -1;
+
+  public static LevelInfos[] LEVEL_INFOS = new LevelInfos[100];
+
   // * ---------------------------------------------- *
   // * -           Level Variables - End            - *
   // * ---------------------------------------------- *
@@ -238,7 +258,8 @@ public class CrossVariables {
   public static final int GAME_ICE_EFFECT = 4;
   public static final int GAME_WIPE_EFFECT = 5;
   public static final int GAME_NEW_EFFECT = 6;
-  public static final int GAME_OVER = 99;  
+  public static final int GAME_WIN = 98;
+  public static final int GAME_OVER = 99;
 	// Phases Init Variables
 	public static boolean GAME_INIT = false;
   // * ---------------------------------------------- *
@@ -255,24 +276,35 @@ public class CrossVariables {
   // * -         Status Variables - End             - *
   // * ---------------------------------------------- *
 
-  // Word Compose Timeout (in Milliseconds)
-  public static final long TIMEOUT_STANDARD = 60000; 
-  public static long TIMEOUT_LIMIT_WARINING = 10000;
-  public static long TIMEOUT_TIME_LEFT = 0;
-  public static long TIMEOUT_PREVIOUS_TIME = 0;
-  
+  // Timers variables for Infinite Mode (in Milliseconds)
+  public static final long TIMEOUT_INFINITE_MODE_STANDARD = 60000;
+  public static long TIMEOUT_INFINITE_MODE_LIMIT_WARINING = 10000;
+  public static long TIMEOUT_INFINITE_MODE_TIME_LEFT = 0;
+  public static long TIMEOUT_INFINITE_MODE_PREVIOUS_TIME = 0;
+
+  // Goals and Timers variables for Saga Mode (time in Milliseconds)
+  public static int WORDS_LEFT_TO_COMPOSE = 0;
+  public static final long TIMEOUT_SAGA_MODE_STANDARD = 60000;
+  public static long TIMEOUT_SAGA_MODE_LIMIT_WARINING = 10000;
+  public static long TIMEOUT_SAGA_MODE_TIME_LEFT = 0;
+  public static long TIMEOUT_SAGA_MODE_PREVIOUS_TIME = 0;
+
   // Words Plate
   public final static int WORD_FONT_SIZE = 50;
-  public final static int WORD_POSITION_Y = 165;
+  public final static int WORD_POSITION_Y = 170;
   public static WordPlate WORD_PLATE = new WordPlate(null, -1, "", false);
 
   // Points Plate
-  public final static int POINTS_FONT_SIZE = 40;
+  public final static int POINTS_FONT_SIZE = 30;
   public final static int POINTS_POSITION_X = 20;
   public final static int POINTS_POSITION_Y = 220;
   public static PointsPlate POINTS_PLATE;
   public static int POINTS_EARNED = 0;
-  
+
+  // Word Find Type-Game letters size
+  public final static int WORD_FIND_FONT_SIZE = 50;
+  public final static int WORD_FIND_POSITION_Y = 67;
+
   
   // Physics Variables
   public static float PHYSICS_GRAVITY = 0.5f;
@@ -324,10 +356,10 @@ public class CrossVariables {
   public static final String CREATE_STATS = "CREATE TABLE Stats (" +
       "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
       "name VARCHAR(100) default '', " +
-      "levelscompleted INTEGER default 0)";
-  public static final String INSERT_STATS = "INSERT INTO Stats (name, levelscompleted) VALUES ('Guest', 1)";
+      "points INTEGER default 0)";
+  public static final String INSERT_STATS = "INSERT INTO Stats (name, points) VALUES ('Guest', 0)";
 
-  public static final String DROP_LEVELS = "DROP TABLE LEvels";
+  public static final String DROP_LEVELS = "DROP TABLE Levels";
   public static final String CREATE_LEVELS = "CREATE TABLE Levels (" +
       "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
       "levelnumber INTEGER default 0, " +
@@ -346,7 +378,7 @@ public class CrossVariables {
     OVERALL_STATE = OVERALL_MENU;
     MENU_STATE = MENU_BOARD;
     SAGA_STATE = SAGA_BOARD;
-	  CrossVariables.TIMEOUT_TIME_LEFT = CrossVariables.TIMEOUT_STANDARD;
+	  CrossVariables.TIMEOUT_INFINITE_MODE_TIME_LEFT = CrossVariables.TIMEOUT_INFINITE_MODE_STANDARD;
     float diffY = height - PHYSICS_MIN_Y;
     if (diffY > 1) {
     	PHYSICS_GRAVITY = PHYSICS_GRAVITY + (PHYSICS_INC_GRAVITY * diffY);
@@ -355,6 +387,7 @@ public class CrossVariables {
     	SPRING_STRENGTH = SPRING_STRENGTH + (SPRING_INC_STRENGTH * diffY);
       SPRING_DAMPING = SPRING_DAMPING + (SPRING_INC_DAMPING * diffY);
     }
+    buildLevelInfos();
   }
   
   public static void loadDictionary(Context aCtx, int aDict) {
@@ -453,6 +486,14 @@ public class CrossVariables {
   public static boolean isWrap(int a, int b) { // Checks if move a->b wraps board edge (like 3->4)
     return Math.abs(a % CrossVariables.BOARD_SIZE - b % CrossVariables.BOARD_SIZE)>1;
   }
+
+  private static void buildLevelInfos() {
+    LEVEL_INFOS[0] = new LevelInfos(LEVEL_TYPE_WORDS, 100000, 3, 0, 0, 0, 0, 0);
+    LEVEL_INFOS[1] = new LevelInfos(LEVEL_TYPE_WORDS, 100000, 5, 2, 0, 0, 0, 0);
+    LEVEL_INFOS[2] = new LevelInfos(LEVEL_TYPE_FIND, 100000, 3, 3, -1, -1);
+    LEVEL_INFOS[3] = new LevelInfos(LEVEL_TYPE_MATH, 100000, 3, 10, 20, MATH_MODE_ADD);
+    LEVEL_INFOS[4] = new LevelInfos(LEVEL_TYPE_BINARY, 100000, 3, 8, 8, -1);
+  }
   
   public static void solveBoard(String[] aBoard) {  
 		mHandler = new Handler() {
@@ -475,13 +516,56 @@ public class CrossVariables {
   
   public static boolean correctWord() {
   	boolean aReturnValue = false;
-    for (int i=0; i<foundCount; i++) {
-    	if (getWord(foundWords[i]).trim().equalsIgnoreCase(COMPOSED_WORD.trim())) {
-    		aReturnValue = true;
-    		break;
-    	}
+  	switch (OVERALL_STATE) {
+      case OVERALL_INFINITE:
+        aReturnValue = matchFound();
+        break;
+      case OVERALL_LEVEL_MODE:
+        switch (LEVEL_TYPE_ACTUAL_GAME) {
+          case LEVEL_TYPE_WORDS:
+            aReturnValue = matchFound();
+            break;
+          case LEVEL_TYPE_FIND:
+            if (LEVEL_WORD_TO_FIND.trim().equalsIgnoreCase(COMPOSED_WORD.trim())) {
+              aReturnValue = true;
+            }
+            break;
+          case LEVEL_TYPE_MATH:
+            aReturnValue = checkMath();
+            break;
+        }
+        break;
     }
   	return aReturnValue;
+  }
+
+  private static boolean matchFound() {
+    boolean aReturnValue = false;
+    for (int i = 0; i < foundCount; i++) {
+      if (getWord(foundWords[i]).trim().equalsIgnoreCase(COMPOSED_WORD.trim())) {
+        aReturnValue = true;
+        break;
+      }
+    }
+    return aReturnValue;
+  }
+
+  private static boolean checkMath() {
+    boolean aReturnValue = false;
+    int sumValue = 0;
+    for (int i=0; i<COMPOSED_WORD.length(); i++) {
+      String aChar = COMPOSED_WORD.substring(i, i+1);
+      int aValue = 0;
+      try {
+        aValue = Integer.parseInt(aChar);
+      }
+      catch (NumberFormatException _NFE) {}
+      sumValue += aValue;
+    }
+    if (sumValue == LEVEL_NUMBER_TO_FIND) {
+      aReturnValue = true;
+    }
+    return aReturnValue;
   }
   
   public static void addSwapSlot(int r, int c) {

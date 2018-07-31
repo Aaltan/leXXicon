@@ -8,6 +8,21 @@
 
     <string name= "lvltitle">"SCHEMA "</string>
     <string name= "lvlstart">"   PLAY   "</string>
+
     <string name= "lvl001title">"DAMMI UN 3"</string>
-    <string name= "lvl001content">"FORMA 3 PAROLE PER COMPLETARE IL LIVELLO"</string>
+    <string name= "lvl001content">"FORMA 3   PAROLE PERCOMPLETAREIL LIVELLO"</string>
+    <string name= "lvl002title">"UN AIUTINO"</string>
+    <string name= "lvl002content">"FORMA 5   PAROLE PERCOMPLETAREIL LIVELLO          2 AIUTI A DISPOSI= ZIONE"</string>
+    <string name="lvl003title">" TROVALE "</string>
+    <string name="lvl003content">"COMPONI LEPAROLE VI=SUALIZZATENELLA TAR=GA IN ALTO"</string>
+    <string name="lvl004title">"IN-SOMMA"</string>
+    <string name="lvl004content">"SOMMARE   MINIMO 2  NUMERI PEROTTENERE  I VALORI  MOSTRATI  NELLA TAR=GA IN ALTO"</string>
+    <!--                          123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789- -->
+    <!-- In Game Strings -->
+    <string name="punti">"Punti:"</string>
+    <string name="possibili">"Possibili:"</string>
+    <string name="timer">"Timer:"</string>
+    <string name="mancanti">"Mancanti:"</string>
+    <string name="finelivello">"FINE LIVELLO"</string>
+    <string name="somma">"SOMMA:"</string>
 </resources>

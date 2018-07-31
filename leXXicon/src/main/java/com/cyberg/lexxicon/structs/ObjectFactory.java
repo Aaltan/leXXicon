@@ -11,6 +11,8 @@ import processing.core.PImage;
 public class ObjectFactory {
   
   private LetterStruct EMPTY;
+	private LetterStruct ACAPO;
+	private LetterStruct MENO;
   private LetterStruct A;
   private LetterStruct B;
   private LetterStruct C;
@@ -60,6 +62,8 @@ public class ObjectFactory {
   
   public void createLetters() {
     EMPTY = new LetterStruct(mFather, "Empty.png", 0, 0, " ");
+		ACAPO = new LetterStruct(mFather, "acapo1.png", 0, 0, "=");
+		MENO = new LetterStruct(mFather, "Meno.png", 0, 0, "-");
     A = new LetterStruct(mFather, "A.png", 1, 9, "A");
     B = new LetterStruct(mFather, "B.png", 5, 2, "B");
     C = new LetterStruct(mFather, "C.png", 2, 2, "C");
@@ -238,8 +242,14 @@ public class ObjectFactory {
   	Collections.shuffle(Arrays.asList(anArray));
   	mLetterBag = anArray;
   }
-  
-  public LetterStruct getLetter() {
+
+	public LetterStruct getNumber() {
+		int rndNumber = PApplet.round(mFather.random(48, 57));
+		String aNum = Character.toString((char)rndNumber);
+		return getLetter(aNum);
+	}
+
+	public LetterStruct getLetter() {
   	int maxRnd = A.getChance() + B.getChance() + C.getChance() + E.getChance() +
                  F.getChance() + G.getChance() + H.getChance() + I.getChance() +
                  L.getChance() + M.getChance() + N.getChance() + O.getChance() +
@@ -270,6 +280,20 @@ public class ObjectFactory {
       		else {
       			return EMPTY;
       		}
+				case 45:                     // "-"
+					if (clone) {
+						return new LetterStruct((PImage)MENO.getImage().clone(), MENO.getPoints(), MENO.getChance(), MENO.getLetter());
+					}
+					else {
+						return MENO;
+					}
+				case 61:                     // "="
+					if (clone) {
+						return new LetterStruct((PImage)ACAPO.getImage().clone(), ACAPO.getPoints(), ACAPO.getChance(), ACAPO.getLetter());
+					}
+					else {
+						return ACAPO;
+					}
         case 48:                     // "0"
           if (clone) {
             return new LetterStruct((PImage)_0.getImage().clone(), _0.getPoints(), _0.getChance(), _0.getLetter());

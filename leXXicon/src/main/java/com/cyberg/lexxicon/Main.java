@@ -53,6 +53,7 @@ public class Main extends PApplet {
 	private float mTouchX = -1f;
 	private float mTouchY = -1f;
 	public PFont mWordFont;
+	public PFont mDefaultFont;
 	private DisplayWords mDisplayWords;
 	
 	public ObjectFactory mObjFactory;
@@ -75,11 +76,13 @@ public class Main extends PApplet {
   
   public void setup() {
   	CrossVariables.initStatics(width, height, getApplicationContext());
-		Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler(this, Main.class));	
+		Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler(this, Main.class));
+		//dropDB();
   	checkDB();
 	  sfondo = loadImage("sfondoingame.jpg");		
 	  sfondoMenu = loadImage("sfondomenu.jpg");		
-	  mWordFont = loadFont("2006-48.vlw");
+	  mWordFont = loadFont("ErasITC-Demi-20.vlw");
+	  mDefaultFont = createFont("SansSerif", 20, true, null);
 	  sfondo.resize(width, height);
 	  sfondoMenu.resize(width, height);
 		gesture = new KetaiGesture(this);
@@ -188,24 +191,34 @@ public class Main extends PApplet {
 		CrossVariables.OVERALL_STATE = CrossVariables.MENU_BOARD;
   }
 
+  private void dropDB() {
+		CrossVariables.DB = new KetaiSQLite( this);
+		CrossVariables.DB.execute(CrossVariables.DROP_STATS);
+    CrossVariables.DB.execute(CrossVariables.DROP_LEVELS);
+		CrossVariables.DB.execute(CrossVariables.CREATE_STATS);
+		CrossVariables.DB.execute(CrossVariables.CREATE_LEVELS);
+	}
+
 	private void checkDB() {
 		CrossVariables.DB = new KetaiSQLite( this);
 		if (CrossVariables.DB.connect()) {
-			if (!CrossVariables.DB.tableExists("Stats")) {
+			if (!CrossVariables.DB.tableExists("Levels")) {
 			  CrossVariables.DB.execute(CrossVariables.DROP_STATS);
 				CrossVariables.DB.execute(CrossVariables.CREATE_STATS);
-        CrossVariables.DB.execute(CrossVariables.INSERT_STATS);
 				CrossVariables.DB.execute(CrossVariables.CREATE_LEVELS);
 			}
 			else {
-			  String aSQLStmt = "SELECT * FROM Stats";
+			  String aSQLStmt = "SELECT * FROM Levels ORDER BY levelnumber DESC";
         CrossVariables.DB.query(aSQLStmt);
         if (CrossVariables.DB.next()) {
-          CrossVariables.STATUS_RECORDID = CrossVariables.DB.getInt("id");
-          CrossVariables.STATUS_LEVELSCOMPLETED = CrossVariables.DB.getInt("levelscompleted");
-          CrossVariables.STATUS_PLAYERNAME = CrossVariables.DB.getString("name");
+          CrossVariables.STATUS_LEVELSCOMPLETED = CrossVariables.DB.getInt("levelnumber");
+          // Not used yet
+          // CrossVariables.STATUS_RECORDID = CrossVariables.DB.getInt("id");
+          // CrossVariables.STATUS_PLAYERNAME = CrossVariables.DB.getString("name");
+          // Not used yet
         }
       }
+      CrossVariables.DB.close();
 		}
 	}
 
@@ -223,6 +236,9 @@ public class Main extends PApplet {
 				break;
 			case CrossVariables.OVERALL_INFINITE:
 				manageInfiniteBack();
+				break;
+			case CrossVariables.OVERALL_LEVEL_MODE:
+				manageLevelModeBack();
 				break;
 			case CrossVariables.OVERALL_VS:
 				manageVSBack();
@@ -250,6 +266,20 @@ public class Main extends PApplet {
 				mInfiniteGameCore.reset();
 				break;
   	}
+	}
+
+	public void manageLevelModeBack() {
+		switch (CrossVariables.GAME_STATE) {
+			case CrossVariables.GAME_BOARD:
+				mLevelsGameCore.reset();
+				break;
+			case CrossVariables.GAME_WORD_LIST:
+				CrossVariables.GAME_STATE = CrossVariables.GAME_BOARD;
+				break;
+			case CrossVariables.GAME_OVER:
+				mLevelsGameCore.reset();
+				break;
+		}
 	}
 
 	public void manageVSBack() {

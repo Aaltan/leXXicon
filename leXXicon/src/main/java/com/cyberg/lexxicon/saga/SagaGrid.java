@@ -31,6 +31,10 @@ public class SagaGrid {
 			mSlots[i - fromLevel] = new SagaObjectSlot(mFather, aLevel, i);
 		}
 	}
+
+	public void resetSlots() {
+		mSlots = new SagaObjectSlot[9];
+	}
 	
 	public void update(float tX, float tY) throws Exception {
 		int fromLevel = (CrossVariables.SAGA_CURRENT_PAGE - 1) * CrossVariables.SAGA_PER_PAGE + 1;

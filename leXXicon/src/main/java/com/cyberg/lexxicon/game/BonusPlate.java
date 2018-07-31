@@ -24,7 +24,7 @@ public class BonusPlate {
   	mNewBonus = mFather.mBonusFactory.getBonus(CrossVariables.BONUS_TYPE_NEW_BOARD);
   }
 
-  public void update(float tX, float tY) throws Exception {
+	public void update(float tX, float tY) throws Exception {
   	updateBonus(mBombBonus, tX, tY);
 		updateBonus(mSuggestBonus, tX, tY);
   	updateBonus(mIceBonus, tX, tY);
@@ -32,7 +32,7 @@ public class BonusPlate {
   	updateBonus(mNewBonus, tX, tY);
   }
   
-  private void updateBonus(BonusStruct aBS, float tX, float tY) {  	
+  private void updateBonus(BonusStruct aBS, float tX, float tY) {
   	int animOffsetX = 0;
   	int animOffsetY = 0;
   	if (CrossVariables.BONUS_GRANTED == aBS.getType()) {

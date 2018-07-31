@@ -130,7 +130,7 @@ public class SagaFactory {
 			String aSQLStmt = "SELECT levelstars FROM Levels WHERE levelnumber = " + aLevel;
 			CrossVariables.DB.query(aSQLStmt);
 			if (CrossVariables.DB.next()) {
-			  nrOfStars = CrossVariables.DB.getInt("levelStars");
+			  nrOfStars = CrossVariables.DB.getInt("levelstars");
 			}
 		}
   	return nrOfStars;

@@ -84,13 +84,11 @@ public class SagaLevelInstr {
     }
     int r = 0;
     int c = 0;
-    boolean playShown = false;
     for (int i=0; i<CrossVariables.LEVEL_INSTR_LETTERS_SHOWN; i++) {
       if (r == 0) mFather.tint(200, 200, 200);
       if (r == 1) mFather.tint(225, 225, 225);
       if (r == 13) {
         mFather.tint(255, 255, 0);
-        playShown = true;
       }
       if (r<CrossVariables.LEVEL_INSTR_GRID_ROWS) {
         if (mInstructions[r][c] != null) {
@@ -130,13 +128,11 @@ public class SagaLevelInstr {
     }
     int r = 0;
     int c = 0;
-    boolean playShown = false;
     for (int i=0; i<CrossVariables.LEVEL_INSTR_LETTERS_SHOWN; i++) {
       if (r == 0) mFather.tint(200, 200, 200);
       if (r == 1) mFather.tint(225, 225, 225);
       if (r == 13) {
         mFather.tint(255, 255, 0);
-        playShown = true;
       }
       if (r<CrossVariables.LEVEL_INSTR_GRID_ROWS) {
         if (mInstructions[r][c] != null) {

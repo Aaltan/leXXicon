@@ -43,7 +43,7 @@ public class LetterGrid {
 		}
 	}
 
-	public void fillGrid() {
+	public void fillGridLetters() {
 		int offsetY = mFather.height;
 		for (int r = 0; r < mNumRows; r++) {
 			for (int c = 0; c < mNumCols; c++) {
@@ -59,8 +59,24 @@ public class LetterGrid {
 		}
 		solveGrid();		
 	}
-	
-	public void cleanGrid() {
+
+  public void fillGridNumbers() {
+    int offsetY = mFather.height;
+    for (int r = 0; r < mNumRows; r++) {
+      for (int c = 0; c < mNumCols; c++) {
+        LetterStruct aLetter = mObjFactory.getNumber();
+        // Metto in negativo l'offset Y, in quanto devono partire da fuori
+        // schermo
+        if (!mSlots[r][c].isFull()) {
+          mSlots[r][c] = new ObjectSlot(mFather, mPS, aLetter, mTopY,
+              mLeftX + (c * aLetter.getImage().width),
+              -(offsetY + (aLetter.getImage().height * 3 * r)), true);
+        }
+      }
+    }
+  }
+
+  public void cleanGrid() {
 		for (int r = 0; r < mNumRows; r++) {
 			for (int c = 0; c < mNumCols; c++) {
 				mSlots[r][c].destroyParticles();
@@ -78,7 +94,8 @@ public class LetterGrid {
 		if (CrossVariables.MARKED_FOR_SWAP.size() > 0) {
 			if (CrossVariables.correctWord()) {
 				int pointsEarned = VariousUtils.getPoints(mFather, CrossVariables.COMPOSED_WORD);
-				CrossVariables.TIMEOUT_TIME_LEFT = CrossVariables.TIMEOUT_STANDARD;
+				CrossVariables.TIMEOUT_INFINITE_MODE_TIME_LEFT = CrossVariables.TIMEOUT_INFINITE_MODE_STANDARD;
+				decreaseWordsToCompose();
 				CrossVariables.POINTS_EARNED += pointsEarned;
 				CrossVariables.WORD_PLATE = new WordPlate(mFather, 200, new String(CrossVariables.COMPOSED_WORD), inError);
 				mBonusAnim = mFather.mBonusFactory.getBonus(CrossVariables.COMPOSED_WORD);
@@ -87,6 +104,7 @@ public class LetterGrid {
 					mBonusAnim.setDurationFrame(CrossVariables.BONUS_ANIM_FRAMES);
 				}
 				CrossVariables.COMPOSED_WORD = "";
+				CrossVariables.LEVEL_WORD_TO_FIND = "";
 				swapSlots();
 			}
 			else if (CrossVariables.BONUS_SLOTS_CLEAN) {
@@ -113,6 +131,10 @@ public class LetterGrid {
 		if (mBonusAnim != null) {
 			animateBonus();
 		}
+	}
+
+	private void decreaseWordsToCompose() {
+		CrossVariables.WORDS_LEFT_TO_COMPOSE--;
 	}
 	
 	public void updateBonus(float tX, float tY) throws Exception {
@@ -181,7 +203,23 @@ public class LetterGrid {
 	
 	private void fillEmptySlots() {
 		for (int i=0; i<CrossVariables.MARKED_FOR_FILL.size(); i++) {
-			LetterStruct aLetter = mObjFactory.getLetter();
+			LetterStruct aLetter = null;
+			switch (CrossVariables.LEVEL_TYPE_ACTUAL_GAME) {
+				case CrossVariables.LEVEL_TYPE_WORDS:
+					aLetter = mObjFactory.getLetter();
+					break;
+				case CrossVariables.LEVEL_TYPE_FIND:
+					aLetter = mObjFactory.getLetter();
+					break;
+				case CrossVariables.LEVEL_TYPE_BINARY:
+					break;
+				case CrossVariables.LEVEL_TYPE_MATH:
+					aLetter = mObjFactory.getNumber();
+					break;
+				default:
+					aLetter = mObjFactory.getLetter();
+					break;
+			}
 			// Metto in negativo l'offset Y, in quanto devono partire da fuori
 			// schermo
 			int r = CrossVariables.MARKED_FOR_FILL.get(i).getRow();
@@ -192,7 +230,21 @@ public class LetterGrid {
 																		-(aLetter.getImage().height * 2 * r), true);
 		}
 		CrossVariables.MARKED_FOR_FILL = new ArrayList<EmptySlot>();
-		solveGrid();
+		switch (CrossVariables.LEVEL_TYPE_ACTUAL_GAME) {
+			case CrossVariables.LEVEL_TYPE_WORDS:
+				solveGrid();
+				break;
+			case CrossVariables.LEVEL_TYPE_FIND:
+				solveGrid();
+				break;
+			case CrossVariables.LEVEL_TYPE_BINARY:
+				break;
+			case CrossVariables.LEVEL_TYPE_MATH:
+				break;
+			default:
+        solveGrid();
+				break;
+		}
 	}
 	
 	private void solveGrid() {

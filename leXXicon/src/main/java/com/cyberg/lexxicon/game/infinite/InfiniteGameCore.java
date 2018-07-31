@@ -40,9 +40,9 @@ public class InfiniteGameCore {
 	  
   public void update(float aTX, float aTY) throws Exception {
   	if (!CrossVariables.GAME_INIT) {
-  		mLetterGrid.fillGrid();
+  		mLetterGrid.fillGridLetters();
   		CrossVariables.GAME_INIT = true;
-  		CrossVariables.TIMEOUT_PREVIOUS_TIME = System.currentTimeMillis();
+  		CrossVariables.TIMEOUT_INFINITE_MODE_PREVIOUS_TIME = System.currentTimeMillis();
   	}
   	switch (CrossVariables.GAME_STATE) {
   		case CrossVariables.GAME_BOARD:
@@ -93,11 +93,11 @@ public class InfiniteGameCore {
   	}
   	else {
   		long currentTime = System.currentTimeMillis();
-    	CrossVariables.TIMEOUT_TIME_LEFT -= (currentTime - CrossVariables.TIMEOUT_PREVIOUS_TIME);
-    	CrossVariables.TIMEOUT_PREVIOUS_TIME = currentTime;
+    	CrossVariables.TIMEOUT_INFINITE_MODE_TIME_LEFT -= (currentTime - CrossVariables.TIMEOUT_INFINITE_MODE_PREVIOUS_TIME);
+    	CrossVariables.TIMEOUT_INFINITE_MODE_PREVIOUS_TIME = currentTime;
   		int rndX = 0;
   		int rndY = 0;
-    	if (CrossVariables.TIMEOUT_TIME_LEFT <= CrossVariables.TIMEOUT_LIMIT_WARINING) {
+    	if (CrossVariables.TIMEOUT_INFINITE_MODE_TIME_LEFT <= CrossVariables.TIMEOUT_INFINITE_MODE_LIMIT_WARINING) {
     		rndX = PApplet.round(mFather.random(-2, 2) / CrossVariables.RESIZE_FACTOR_X);
     		rndY = PApplet.round(mFather.random(-2, 2) / CrossVariables.RESIZE_FACTOR_Y);
     	}
@@ -113,7 +113,7 @@ public class InfiniteGameCore {
   
   private void checkGameOver() {
   	if (CrossVariables.foundCount == 0 ||
-  			CrossVariables.TIMEOUT_TIME_LEFT <= 0) {
+  			CrossVariables.TIMEOUT_INFINITE_MODE_TIME_LEFT <= 0) {
   		CrossVariables.GAME_STATE = CrossVariables.GAME_OVER;
       int frameToCenter = 30;
       int framePause = 50;
@@ -211,7 +211,7 @@ public class InfiniteGameCore {
 		CrossVariables.GAME_STATE = CrossVariables.GAME_BOARD;
 		CrossVariables.OVERALL_STATE = CrossVariables.MENU_BOARD;
 		CrossVariables.BONUS_USED = -1;
-		CrossVariables.TIMEOUT_TIME_LEFT = CrossVariables.TIMEOUT_STANDARD;
+		CrossVariables.TIMEOUT_INFINITE_MODE_TIME_LEFT = CrossVariables.TIMEOUT_INFINITE_MODE_STANDARD;
 		CrossVariables.GAME_INIT = false;
 		CrossVariables.NR_BONUS_SUGGESTION = 0;
 		CrossVariables.NR_BONUS_BOMB = 0;

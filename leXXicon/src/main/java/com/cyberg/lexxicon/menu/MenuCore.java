@@ -99,6 +99,7 @@ public class MenuCore {
   			break;
   		case 2:
   			mMenuSelected = CrossVariables.OVERALL_INFINITE;
+  			CrossVariables.POINTS_PLATE.setCheatMode(true);
   			break;
   		case 3:
   			mMenuSelected = CrossVariables.OVERALL_SAGA;

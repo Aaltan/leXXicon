@@ -128,8 +128,9 @@ public class SagaCore {
     CrossVariables.SAGA_CURRENT_PAGE = 1;
     CrossVariables.LEVEL_INSTR_LETTERS_SHOWN = 0;
     CrossVariables.LEVEL_INIT = false;
-    CrossVariables.LEVELS_SELECTED_NUM = -1;
-    CrossVariables.OVERALL_STATE = CrossVariables.OVERALL_INFINITE;
+    CrossVariables.OVERALL_STATE = CrossVariables.OVERALL_LEVEL_MODE;
+    CrossVariables.POINTS_PLATE.setCheatMode(false);
+    mSagaGrid.resetSlots();
   }
 
   private void levelSelect(float aTX, float aTY) {

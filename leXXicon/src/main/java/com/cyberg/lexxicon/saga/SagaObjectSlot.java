@@ -121,7 +121,8 @@ public class SagaObjectSlot {
             levelRow * (CrossVariables.SAGA_IMAGE_STANDARD_Y / CrossVariables.RESIZE_FACTOR_Y) +
             levelRow * (CrossVariables.SAGA_GRID_SPACING_Y / CrossVariables.RESIZE_FACTOR_Y));
 		if (tX > (offsetX) && tX < (offsetX + aLS.getImage().width) &&
-				tY > (offsetY) && tY < (offsetY + aLS.getImage().height)) {
+				tY > (offsetY) && tY < (offsetY + aLS.getImage().height) &&
+				levelNum <= (CrossVariables.STATUS_LEVELSCOMPLETED + 1)) {
 			return true;
 		}
 		else {
