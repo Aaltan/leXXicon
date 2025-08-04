@@ -42,7 +42,7 @@ public class VariousUtils {
 		final String logString = new String(log.toString());
 		File dir = new File (Environment.getExternalStorageDirectory() + "/debug/");
 		dir.mkdirs();
-		File file = new File(dir, "leXXlg.txt");
+                File file = new File(dir, "leXXlog.txt");
 		try {		
 			FileOutputStream fOut = new FileOutputStream(file);
 			OutputStreamWriter osw = new OutputStreamWriter(fOut); 
