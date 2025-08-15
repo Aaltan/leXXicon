@@ -1,22 +1,22 @@
 apply plugin: 'com.android.library'
 
 android {
-
-    compileSdkVersion 19
+    namespace 'com.lancer.android.processing'
+    compileSdkVersion 33
 
     defaultConfig {
-        minSdkVersion 11
-        targetSdkVersion 11
+        minSdkVersion 21
+        targetSdkVersion 33
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
+
+    namespace 'com.cyberg.processing' // o il namespace appropriato
 }
 
 dependencies {
-    implementation 'com.android.support:support-v4:19.0.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }

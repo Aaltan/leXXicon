@@ -25,6 +25,11 @@ public class InfiniteGameCore {
 	private BonusPlate mBonusPlate;
 	private SuggestionPlate mSuggestionPlate;
 	private DisplayWords mDisplayWords;
+
+	private boolean mShowExitConfirmation = false;
+	private long mConfirmationStartTime = 0;
+	private final long CONFIRMATION_TIMEOUT = 3000; // 3 secondi
+
 	
 	public InfiniteGameCore(Main aFather, ParticleSystem aPS, PImage sfondo,
 													LetterGrid letterGrid, BonusPlate bonusPlate,
@@ -37,48 +42,99 @@ public class InfiniteGameCore {
 		mSuggestionPlate = suggestionPlate;
 		mDisplayWords = displayWords;
 	}
-	  
-  public void update(float aTX, float aTY) throws Exception {
-  	if (!CrossVariables.GAME_INIT) {
-  		mLetterGrid.fillGridLetters();
-  		CrossVariables.GAME_INIT = true;
-  		CrossVariables.TIMEOUT_INFINITE_MODE_PREVIOUS_TIME = System.currentTimeMillis();
-  	}
-  	switch (CrossVariables.GAME_STATE) {
-  		case CrossVariables.GAME_BOARD:
-  	  	mPS.tick();
-  			drawGameBoard(aTX, aTY);
-  			break;
-  		case CrossVariables.GAME_WORD_LIST:
-  			drawWordList();
-  			break;
-  		case CrossVariables.GAME_SUGGESTION_EFFECT:
-  	  	mPS.tick();
-  			drawSuggestionEffect();
-  			break;
-  		case CrossVariables.GAME_BOMB_EFFECT:
-  	  	mPS.tick();
-  			drawBombEffect();
-  			break;
-  		case CrossVariables.GAME_ICE_EFFECT:
-  	  	mPS.tick();
-  			drawIceEffect();
-  			break;
-  		case CrossVariables.GAME_WIPE_EFFECT:
-  	  	mPS.tick();
-  			drawWipeEffect();
-  			break;
-  		case CrossVariables.GAME_NEW_EFFECT:
-  	  	mPS.tick();
-  			drawNewEffect();
-  			break;
-  		case CrossVariables.GAME_OVER:
-  	  	mPS.tick();
-  			drawGameOver();
-  			break;
-  	}
-  }
-  
+
+	public void update(float aTX, float aTY) throws Exception {
+		if (!CrossVariables.GAME_INIT) {
+			mLetterGrid.fillGridLetters();
+			CrossVariables.GAME_INIT = true;
+			CrossVariables.TIMEOUT_INFINITE_MODE_PREVIOUS_TIME = System.currentTimeMillis();
+		}
+
+		// Continua sempre l'aggiornamento del timer, anche durante la conferma
+		if (CrossVariables.GAME_STATE == CrossVariables.GAME_BOARD ||
+				CrossVariables.GAME_STATE == CrossVariables.GAME_SUGGESTION_EFFECT ||
+				CrossVariables.GAME_STATE == CrossVariables.GAME_BOMB_EFFECT ||
+				CrossVariables.GAME_STATE == CrossVariables.GAME_ICE_EFFECT ||
+				CrossVariables.GAME_STATE == CrossVariables.GAME_WIPE_EFFECT ||
+				CrossVariables.GAME_STATE == CrossVariables.GAME_NEW_EFFECT) {
+			updateInfiniteTimer();
+		}
+
+		// Aggiornamento normale del gioco
+		switch (CrossVariables.GAME_STATE) {
+			case CrossVariables.GAME_BOARD:
+				mPS.tick();
+				drawGameBoard(aTX, aTY);
+				break;
+			case CrossVariables.GAME_WORD_LIST:
+				drawWordList();
+				break;
+			case CrossVariables.GAME_SUGGESTION_EFFECT:
+				mPS.tick();
+				drawSuggestionEffect();
+				break;
+			case CrossVariables.GAME_BOMB_EFFECT:
+				mPS.tick();
+				drawBombEffect();
+				break;
+			case CrossVariables.GAME_ICE_EFFECT:
+				mPS.tick();
+				drawIceEffect();
+				break;
+			case CrossVariables.GAME_WIPE_EFFECT:
+				mPS.tick();
+				drawWipeEffect();
+				break;
+			case CrossVariables.GAME_NEW_EFFECT:
+				mPS.tick();
+				drawNewEffect();
+				break;
+			case CrossVariables.GAME_OVER:
+				mPS.tick();
+				drawGameOver();
+				break;
+		}
+
+		// Gestisci la conferma di uscita se attiva (sovrapposta al gioco)
+		if (mShowExitConfirmation) {
+			handleExitConfirmation(aTX, aTY);
+		}
+	}
+
+	/**
+	 * Aggiorna solo il timer della modalità infinita
+	 */
+	private void updateInfiniteTimer() {
+		long currentTime = System.currentTimeMillis();
+		CrossVariables.TIMEOUT_INFINITE_MODE_TIME_LEFT -= (currentTime - CrossVariables.TIMEOUT_INFINITE_MODE_PREVIOUS_TIME);
+		CrossVariables.TIMEOUT_INFINITE_MODE_PREVIOUS_TIME = currentTime;
+	}
+
+	/**
+	 * Mostra la conferma di uscita senza fermare il timer
+	 */
+	public void showExitConfirmation() {
+		mShowExitConfirmation = true;
+		mConfirmationStartTime = System.currentTimeMillis();
+	}
+
+	/**
+	 * Gestisce la conferma di uscita
+	 */
+	public void handleExitConfirmation(float aTX, float aTY) {
+		if (!mShowExitConfirmation) return;
+
+		// Auto-nasconde dopo timeout
+		if (System.currentTimeMillis() - mConfirmationStartTime > CONFIRMATION_TIMEOUT) {
+			mShowExitConfirmation = false;
+			return;
+		}
+
+		// Disegna il dialog di conferma
+		drawExitConfirmationDialog(aTX, aTY);
+	}
+
+
   private void drawWordList() throws Exception {
   	mFather.background(255, 148, 0);
   	mDisplayWords.update();
@@ -320,5 +376,110 @@ public class InfiniteGameCore {
 	    	mLetterGrid.markBonus(slotsToWipe);
   			break;
   	}
-  }  
+  }
+
+	/**
+	 * Disegna il dialog di conferma
+	 */
+	private void drawExitConfirmationDialog(float aTX, float aTY) {
+		// Overlay semi-trasparente
+		mFather.pushStyle();
+		mFather.fill(0, 0, 0, 128);
+		mFather.rect(0, 0, mFather.width, mFather.height);
+
+		// Dialog box
+		float dialogW = mFather.width * 0.8f;
+		float dialogH = mFather.height * 0.3f;
+		float dialogX = (mFather.width - dialogW) / 2;
+		float dialogY = (mFather.height - dialogH) / 2;
+
+		mFather.fill(50, 50, 50);
+		mFather.stroke(200, 200, 200);
+		mFather.strokeWeight(2);
+		mFather.rect(dialogX, dialogY, dialogW, dialogH);
+
+		// Testo di conferma
+		mFather.textFont(mFather.mWordFont);
+		mFather.textSize(PApplet.round(24 / CrossVariables.RESIZE_FACTOR_X));
+		mFather.textAlign(PApplet.CENTER);
+		mFather.fill(255, 255, 255);
+		mFather.text(getLocalizedString("exit_confirmation"),
+				mFather.width / 2,
+				dialogY + dialogH * 0.4f);
+
+		// Pulsanti
+		float buttonW = dialogW * 0.35f;
+		float buttonH = dialogH * 0.25f;
+		float yesButtonX = dialogX + dialogW * 0.15f;
+		float noButtonX = dialogX + dialogW * 0.5f;
+		float buttonY = dialogY + dialogH * 0.65f;
+
+		// Pulsante SÌ
+		mFather.fill(200, 50, 50);
+		mFather.rect(yesButtonX, buttonY, buttonW, buttonH);
+		mFather.fill(255, 255, 255);
+		mFather.textSize(PApplet.round(20 / CrossVariables.RESIZE_FACTOR_X));
+		mFather.text(getLocalizedString("yes"),
+				yesButtonX + buttonW / 2,
+				buttonY + buttonH * 0.7f);
+
+		// Pulsante NO
+		mFather.fill(50, 200, 50);
+		mFather.rect(noButtonX, buttonY, buttonW, buttonH);
+		mFather.fill(255, 255, 255);
+		mFather.text(getLocalizedString("no"),
+				noButtonX + buttonW / 2,
+				buttonY + buttonH * 0.7f);
+
+		mFather.popStyle();
+
+		// Gestisci touch sui pulsanti
+		if (aTX != -1 && aTY != -1) {
+			// Touch su SÌ - esci dalla modalità infinita
+			if (aTX >= yesButtonX && aTX <= yesButtonX + buttonW &&
+					aTY >= buttonY && aTY <= buttonY + buttonH) {
+				mShowExitConfirmation = false;
+				backToMenu();
+			}
+			// Touch su NO - continua il gioco
+			else if (aTX >= noButtonX && aTX <= noButtonX + buttonW &&
+					aTY >= buttonY && aTY <= buttonY + buttonH) {
+				mShowExitConfirmation = false;
+			}
+		}
+	}
+
+	/**
+	 * Torna al menu principale
+	 */
+	public void backToMenu() {
+		// Reset completo della modalità infinita
+		reset();
+
+		// Torna al menu
+		CrossVariables.OVERALL_STATE = CrossVariables.OVERALL_MENU;
+	}
+
+	/**
+	 * Ottiene stringhe localizzate per i dialog
+	 */
+	private String getLocalizedString(String key) {
+		try {
+			int resId = mFather.getResources().getIdentifier(key, "string",
+					mFather.getApplicationContext().getPackageName());
+			if (resId != 0) {
+				return mFather.getResources().getString(resId);
+			}
+		} catch (Exception e) {
+			android.util.Log.e("InfiniteGameCore", "Error getting localized string: " + key, e);
+		}
+
+		// Fallback in inglese
+		switch (key) {
+			case "exit_confirmation": return "QUIT CURRENT GAME?";
+			case "yes": return "YES";
+			case "no": return "NO";
+			default: return key;
+		}
+	}
 }

@@ -52,15 +52,17 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.*;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpEntity;
-
-import processing.data.*;
-import processing.event.*;
-import processing.opengl.*;
+import processing.data.Table;
+import processing.data.XML;
+import processing.event.Event;
+import processing.event.KeyEvent;
+import processing.event.MouseEvent;
+import processing.opengl.PGL;
+import processing.opengl.PGLES;
+import processing.opengl.PGraphics2D;
+import processing.opengl.PGraphics3D;
+import processing.opengl.PGraphicsOpenGL;
+import processing.opengl.PShader;
 
 
 public class PApplet extends Activity implements PConstants, Runnable {
@@ -4672,19 +4674,15 @@ public class PApplet extends Activity implements PConstants, Runnable {
         // Workaround for Android bug 6066
         // http://code.google.com/p/android/issues/detail?id=6066
         // http://code.google.com/p/processing/issues/detail?id=629
-//      URL url = new URL(filename);
-//      stream = url.openStream();
-//      return stream;
-        HttpGet httpRequest = null;
-        httpRequest = new HttpGet(URI.create(filename));
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpResponse response = (HttpResponse) httpclient.execute(httpRequest);
-        HttpEntity entity = response.getEntity();
-        return entity.getContent();
+
+        URL url = new URL(filename);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        InputStream input = connection.getInputStream();
+        return input;
         // can't use BufferedHttpEntity because it may try to allocate a byte
         // buffer of the size of the download, bad when DL is 25 MB... [0200]
-//        BufferedHttpEntity bufHttpEntity = new BufferedHttpEntity(entity);
-//        return bufHttpEntity.getContent();
 
       } catch (MalformedURLException mfue) {
         // not a url, that's fine

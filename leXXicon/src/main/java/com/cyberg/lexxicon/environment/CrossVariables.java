@@ -5,9 +5,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
+import com.cyberg.lexxicon.Main;
 import com.cyberg.lexxicon.game.EmptySlot;
 import com.cyberg.lexxicon.game.PointsPlate;
 import com.cyberg.lexxicon.game.WordPlate;
+import com.cyberg.lexxicon.game.levels.LevelAdapter;
+import com.cyberg.lexxicon.game.levels.LevelConfiguration;
 import com.cyberg.lexxicon.game.levels.LevelInfos;
 import com.cyberg.lexxicon.solver.DictionaryEntry;
 import com.cyberg.lexxicon.solver.Solver;
@@ -23,7 +26,7 @@ import ketai.data.KetaiSQLite;
 
 public class CrossVariables {
 	
-	public final static boolean DEBUG = true;
+	public final static boolean DEBUG = false;
 	
 	// Resize Variables
   public final static float SCREEN_STANDARD_X = 480.0f;
@@ -87,7 +90,13 @@ public class CrossVariables {
   // * -                Dictionary                  - *
   // * ---------------------------------------------- *
   public final static int DICT_ITALIAN = 0;
-  public final static int DICT_BERGAMO = 1;
+  public final static int DICT_ENGLISH = 1;
+  public final static int DICT_FRENCH = 2;
+  public final static int DICT_GERMAN = 3;
+  public final static int DICT_SPANISH = 4;
+  // Legacy - mantenuto per compatibilità ma deprecato
+  @Deprecated
+  public final static int DICT_BERGAMO = 1000;
   // * ---------------------------------------------- *
   // * -                Dictionary                  - *
   // * ---------------------------------------------- *
@@ -196,14 +205,35 @@ public class CrossVariables {
   public final static float SAGA_ARROW_IMAGE_STANDARD_Y = 128;
   public final static int SAGA_ARROW_OFFSET_X = 30;
   public final static int SAGA_ARROW_OFFSET_Y = 600;
+  // Configurazione avanzata livelli
+  public static final int MAX_LEVELS = 99;
+  public static final int LEVELS_PER_WORLD = 15; // 6 mondi + tutorial
+  public static final int TUTORIAL_LEVELS = 9;   // Livelli 1-9
+
+  // Tipi di mondo/tema
+  public static final int WORLD_TUTORIAL = 0;    // Livelli 1-9
+  public static final int WORLD_BASICS = 1;      // Livelli 10-19
+  public static final int WORLD_MATH = 2;        // Livelli 20-29
+  public static final int WORLD_BINARY = 3;      // Livelli 30-39
+  public static final int WORLD_SPEED = 4;       // Livelli 40-49
+  public static final int WORLD_CHALLENGE = 5;   // Livelli 50-59
+  public static final int WORLD_MASTER = 6;      // Livelli 60-69
+  public static final int WORLD_CHAMPION = 7;    // Livelli 70-79
+  public static final int WORLD_EXPERT = 8;      // Livelli 80-89
+  public static final int WORLD_LEGEND = 9;      // Livelli 90-99
+
+  // Difficoltà progressive
+  public static final int DIFFICULTY_EASY = 0;
+  public static final int DIFFICULTY_MEDIUM = 1;
+  public static final int DIFFICULTY_HARD = 2;
+  public static final int DIFFICULTY_EXPERT = 3;
   // * ---------------------------------------------- *
   // * -        Saga Board Variables - End          - *
   // * ---------------------------------------------- *
   // * ---------------------------------------------- *
   // * -          Level Variables - Start           - *
   // * ---------------------------------------------- *
-  // Level Selected Variables
-  // Phases Init Variables
+  // Level Selected Variables (mantenute per compatibilità)
   public static boolean LEVEL_INIT = false;
   public static int LEVELS_SELECTED_NUM = -1;
   public final static int LEVELS_ANIM_FRAMES = 40;
@@ -212,25 +242,29 @@ public class CrossVariables {
   public static int LEVELS_ANIM_SIGN_X = 1;
   public static int LEVELS_ANIM_OFFSET_Y = 0;
   public static int LEVELS_ANIM_SIGN_Y = 1;
-  // Graphic Variables for instructions
+
+  // Graphic Variables for instructions (mantenute)
   public final static int LEVEL_INSTR_DISPLAY_DELAY = 1;
   public final static int LEVEL_INSTR_ANIM_PLAY_FRAMES = 10;
   public static int LEVEL_INSTR_ANIM_PLAY_LEFT = -1;
   public static int LEVEL_INSTR_LETTERS_SHOWN = 0;
-  public final static int LEVEL_INSTR_GRID_ROWS = 14;
-  public final static int LEVEL_INSTR_GRID_COLS = 10;
-  public final static float LEVEL_INSTR_IMAGE_STANDARD_X = 35;
-  public final static float LEVEL_INSTR_IMAGE_STANDARD_Y = 35;
-  public final static float LEVEL_INSTR_IMAGE_STANDARD_X_SPACE = 4;
-  public final static float LEVEL_INSTR_IMAGE_STANDARD_Y_SPACE = 4;
+  public final static int LEVEL_INSTR_GRID_ROWS = 15;
+  public final static int LEVEL_INSTR_GRID_COLS = 14;
+  public final static float LEVEL_INSTR_IMAGE_STANDARD_X = 30;
+  public final static float LEVEL_INSTR_IMAGE_STANDARD_Y = 30;
+  public final static float LEVEL_INSTR_IMAGE_STANDARD_X_SPACE = 2;
+  public final static float LEVEL_INSTR_IMAGE_STANDARD_Y_SPACE = 2;
 
-  // Level Configuration Section
+  // Level Configuration Section (mantenute)
   public static final int LEVEL_TYPE_WORDS = 0;
   public static final int LEVEL_TYPE_FIND = 1;
   public static final int LEVEL_TYPE_BINARY = 2;
   public static final int LEVEL_TYPE_MATH = 3;
 
+  // Modo attuale del livello math
   public static int MATH_ACTUAL_MODE = -1;
+  public static final int MATH_MODE_NONE = -1;
+
   public static final int MATH_MODE_ADD = 0;
   public static final int MATH_MODE_SUBTRACT = 1;
   public static final int MATH_MODE_MULTIPY = 2;
@@ -239,8 +273,10 @@ public class CrossVariables {
   public static int LEVEL_TYPE_ACTUAL_GAME = -1;
   public static String LEVEL_WORD_TO_FIND = "";
   public static int LEVEL_NUMBER_TO_FIND = -1;
+  public static String LEVEL_BINARY_TO_FIND = "";
 
-  public static LevelInfos[] LEVEL_INFOS = new LevelInfos[100];
+  // Array espanso per tutti i livelli
+  public static LevelInfos[] LEVEL_INFOS = new LevelInfos[MAX_LEVELS];
 
   // * ---------------------------------------------- *
   // * -           Level Variables - End            - *
@@ -328,12 +364,6 @@ public class CrossVariables {
     
   public static float RESIZE_FACTOR_X = -1;
   public static float RESIZE_FACTOR_Y = -1;
-  public static float FRAME_ADJUST = -1;
-  
-  public final static int DOUBLE_LETTER = 1;
-  public final static int TRIPLE_LETTER = 2;
-  public final static int DOUBLE_WORD = 3;
-  public final static int TRIPLE_WORD = 4;
 
   public static ArrayList<EmptySlot> MARKED_FOR_SWAP = new ArrayList<EmptySlot>();
   public static ArrayList<EmptySlot> MARKED_FOR_FILL = new ArrayList<EmptySlot>();
@@ -351,6 +381,11 @@ public class CrossVariables {
 
 	// DB Variables
 	public static KetaiSQLite DB;
+
+  // Bouncing Touch Safe Variables
+  public static long LAST_TOUCH_TIME = 0;
+  public static final long TOUCH_COOLDOWN_MS = 100; // 100ms cooldown tra touch significativi
+
 
   public static final String DROP_STATS = "DROP TABLE Stats";
   public static final String CREATE_STATS = "CREATE TABLE Stats (" +
@@ -378,42 +413,63 @@ public class CrossVariables {
     OVERALL_STATE = OVERALL_MENU;
     MENU_STATE = MENU_BOARD;
     SAGA_STATE = SAGA_BOARD;
-	  CrossVariables.TIMEOUT_INFINITE_MODE_TIME_LEFT = CrossVariables.TIMEOUT_INFINITE_MODE_STANDARD;
+    TIMEOUT_INFINITE_MODE_TIME_LEFT = TIMEOUT_INFINITE_MODE_STANDARD;
+
     float diffY = height - PHYSICS_MIN_Y;
     if (diffY > 1) {
-    	PHYSICS_GRAVITY = PHYSICS_GRAVITY + (PHYSICS_INC_GRAVITY * diffY);
-    	PHYSICS_DRAG = PHYSICS_DRAG + (PHYSICS_INC_DRAG * diffY);
-    	PARTICLE_MASS = PARTICLE_MASS + (PARTICLE_INC_MASS * diffY);
-    	SPRING_STRENGTH = SPRING_STRENGTH + (SPRING_INC_STRENGTH * diffY);
+      PHYSICS_GRAVITY = PHYSICS_GRAVITY + (PHYSICS_INC_GRAVITY * diffY);
+      PHYSICS_DRAG = PHYSICS_DRAG + (PHYSICS_INC_DRAG * diffY);
+      PARTICLE_MASS = PARTICLE_MASS + (PARTICLE_INC_MASS * diffY);
+      SPRING_STRENGTH = SPRING_STRENGTH + (SPRING_INC_STRENGTH * diffY);
       SPRING_DAMPING = SPRING_DAMPING + (SPRING_INC_DAMPING * diffY);
     }
-    buildLevelInfos();
+
+    // USA IL NUOVO SISTEMA DI LIVELLI
+    LevelAdapter.buildAllLevels();
+
+    // Validazione opzionale per debug
+    if (DEBUG) {
+      boolean valid = LevelAdapter.validateLevelDistribution();
+      android.util.Log.d("CrossVariables", "Level distribution valid: " + valid);
+
+      // Stampa alcuni livelli di esempio
+      for (int i = 1; i <= 10; i++) {
+        android.util.Log.d("CrossVariables", LevelConfiguration.getLevelDescription(i));
+      }
+    }
   }
-  
+
   public static void loadDictionary(Context aCtx, int aDict) {
     USER_COUNTRY = aCtx.getResources().getConfiguration().locale.getDisplayCountry();
     String dictFile = "";
+
     switch (aDict) {
-      case CrossVariables.DICT_BERGAMO:
-        dictFile = "Bergamasco.txt";
-        break;
-      case CrossVariables.DICT_ITALIAN:
+      case DICT_ITALIAN:
         dictFile = "Italiano.txt";
         break;
+      case DICT_ENGLISH:
+        dictFile = "English.txt";
+        break;
+      case DICT_FRENCH:
+        dictFile = "French.txt";
+        break;
+      case DICT_GERMAN:
+        dictFile = "German.txt";
+        break;
+      case DICT_SPANISH:
+        dictFile = "Spanish.txt";
+        break;
+      case DICT_BERGAMO: // Legacy support
+        dictFile = "Bergamasco.txt";
+        break;
+      default:
+        dictFile = "English.txt"; // Fallback
+        break;
     }
-    /*
-    if (USER_COUNTRY.trim().equalsIgnoreCase("ITALIA")) {
-  		if (DEBUG) {
-  			dictFile = "ItaTest.txt";
-  		}
-  		else {
-  			dictFile = "Italiano.txt";
-  		}
-    }
-    */
+
     try {
-    	// The following can be pre-computed and should be replaced by constants
-    	CrossVariables.dictionary = buildDictionary(dictFile, aCtx);
+      // The following can be pre-computed and should be replaced by constants
+      CrossVariables.dictionary = buildDictionary(dictFile, aCtx);
       CrossVariables.boardTripletIndices = buildTripletIndices();
       // The following only needs to run once at the beginning of the program
       CrossVariables.candidateWords     = new DictionaryEntry[2000]; // WAAAY too generous
@@ -422,8 +478,28 @@ public class CrossVariables {
       createBonusArray();
     }
     catch (IOException _IOE) {
-  		SOLVER_ERROR = true;
-  		Toast.makeText(aCtx, "Dizionario NON trovato", Toast.LENGTH_LONG).show();
+      SOLVER_ERROR = true;
+      String errorMsg = getLocalizedErrorMessage(aCtx, aDict);
+      Toast.makeText(aCtx, errorMsg, Toast.LENGTH_LONG).show();
+    }
+  }
+
+  /**
+   * Restituisce un messaggio di errore localizzato
+   */
+  private static String getLocalizedErrorMessage(Context aCtx, int dictType) {
+    switch (dictType) {
+      case DICT_ITALIAN:
+        return "Dizionario Italiano NON trovato";
+      case DICT_FRENCH:
+        return "Dictionnaire Français NON trouvé";
+      case DICT_GERMAN:
+        return "Deutsches Wörterbuch NICHT gefunden";
+      case DICT_SPANISH:
+        return "Diccionario Español NO encontrado";
+      case DICT_ENGLISH:
+      default:
+        return "English Dictionary NOT found";
     }
   }
   
@@ -487,24 +563,28 @@ public class CrossVariables {
     return Math.abs(a % CrossVariables.BOARD_SIZE - b % CrossVariables.BOARD_SIZE)>1;
   }
 
-  private static void buildLevelInfos() {
-    LEVEL_INFOS[0] = new LevelInfos(LEVEL_TYPE_WORDS, 100000, 3, 0, 0, 0, 0, 0);
-    LEVEL_INFOS[1] = new LevelInfos(LEVEL_TYPE_WORDS, 100000, 5, 2, 0, 0, 0, 0);
-    LEVEL_INFOS[2] = new LevelInfos(LEVEL_TYPE_FIND, 100000, 3, 3, -1, -1);
-    LEVEL_INFOS[3] = new LevelInfos(LEVEL_TYPE_MATH, 100000, 3, 10, 20, MATH_MODE_ADD);
-    LEVEL_INFOS[4] = new LevelInfos(LEVEL_TYPE_BINARY, 100000, 3, 8, 8, -1);
+  /**
+   * Reset completo dello stato touch - da usare nelle transizioni
+   */
+  public static void resetTouchState(Main mainInstance) {
+    if (mainInstance != null) {
+      mainInstance.fingerDown = false;
+      mainInstance.mTouchX = -1f;
+      mainInstance.mTouchY = -1f;
+    }
   }
-  
+
   public static void solveBoard(String[] aBoard) {  
 		mHandler = new Handler() {
 			public void handleMessage(Message msg) {
 				SOLVER_PROGRESS = msg.getData().getInt("type");
 			}
 		};
+    SOLVER_PROGRESS = CrossVariables.JOB_IN_PROGRESS;
 		mSolver = new Solver(mHandler, aBoard);
 		mSolver.run();
   }
-  
+
   public static String getWord(DictionaryEntry entry) {
     char[] result = new char[entry.letters.length];
     int i=0;
@@ -523,9 +603,23 @@ public class CrossVariables {
       case OVERALL_LEVEL_MODE:
         switch (LEVEL_TYPE_ACTUAL_GAME) {
           case LEVEL_TYPE_WORDS:
+            // Controllo lunghezza minima del livello
+            if (LEVELS_SELECTED_NUM > 0 && LEVELS_SELECTED_NUM <= MAX_LEVELS) {
+              LevelInfos levelInfo = LEVEL_INFOS[LEVELS_SELECTED_NUM - 1];
+              int minLength = levelInfo.getMinWordLength();
+
+              // Controlla prima la lunghezza
+              if (COMPOSED_WORD.trim().length() < minLength) {
+                if (DEBUG) {
+                  android.util.Log.d("CrossVariables","Parola troppo corta: " + COMPOSED_WORD.length() + " < " + minLength);
+                }
+                return false;
+              }
+            }
             aReturnValue = matchFound();
             break;
           case LEVEL_TYPE_FIND:
+          case LEVEL_TYPE_BINARY:
             if (LEVEL_WORD_TO_FIND.trim().equalsIgnoreCase(COMPOSED_WORD.trim())) {
               aReturnValue = true;
             }
@@ -614,5 +708,39 @@ public class CrossVariables {
   	}
   	Collections.shuffle(Arrays.asList(anArray));
   	BONUS_ARRAY = anArray;
+  }
+
+  /**
+   * Determina il mondo per un dato livello
+   */
+  public static int getWorldForLevel(int levelNumber) {
+    if (levelNumber <= 9) return WORLD_TUTORIAL;
+    if (levelNumber <= 19) return WORLD_BASICS;
+    if (levelNumber <= 29) return WORLD_MATH;
+    if (levelNumber <= 39) return WORLD_BINARY;
+    if (levelNumber <= 49) return WORLD_SPEED;
+    if (levelNumber <= 59) return WORLD_CHALLENGE;
+    if (levelNumber <= 69) return WORLD_MASTER;
+    if (levelNumber <= 79) return WORLD_CHAMPION;
+    if (levelNumber <= 89) return WORLD_EXPERT;
+    return WORLD_LEGEND;
+  }
+
+  /**
+   * Determina la posizione del livello nel suo mondo
+   */
+  public static int getLevelInWorld(int levelNumber) {
+    return ((levelNumber - 1) % 10) + 1;
+  }
+
+  /**
+   * Determina la difficoltà basata sulla posizione nel mondo
+   */
+  public static int getDifficultyForLevel(int levelNumber) {
+    int page = (levelNumber - 1) / 10;
+    if (page <= 1) return DIFFICULTY_EASY;
+    if (page <= 3) return DIFFICULTY_MEDIUM;
+    if (page <= 6) return DIFFICULTY_HARD;
+    return DIFFICULTY_EXPERT;
   }
 }

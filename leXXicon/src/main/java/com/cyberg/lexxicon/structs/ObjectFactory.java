@@ -13,6 +13,7 @@ public class ObjectFactory {
   private LetterStruct EMPTY;
 	private LetterStruct ACAPO;
 	private LetterStruct MENO;
+	private LetterStruct DUEPUNTI;
   private LetterStruct A;
   private LetterStruct B;
   private LetterStruct C;
@@ -64,6 +65,7 @@ public class ObjectFactory {
     EMPTY = new LetterStruct(mFather, "Empty.png", 0, 0, " ");
 		ACAPO = new LetterStruct(mFather, "acapo1.png", 0, 0, "=");
 		MENO = new LetterStruct(mFather, "Meno.png", 0, 0, "-");
+		DUEPUNTI = new LetterStruct(mFather, "duepunti.png", 0, 0, ":");
     A = new LetterStruct(mFather, "A.png", 1, 9, "A");
     B = new LetterStruct(mFather, "B.png", 5, 2, "B");
     C = new LetterStruct(mFather, "C.png", 2, 2, "C");
@@ -249,6 +251,12 @@ public class ObjectFactory {
 		return getLetter(aNum);
 	}
 
+	public LetterStruct getBinary() {
+		int rndNumber = PApplet.round(mFather.random(48, 49));
+		String aNum = Character.toString((char)rndNumber);
+		return getLetter(aNum);
+	}
+
 	public LetterStruct getLetter() {
   	int maxRnd = A.getChance() + B.getChance() + C.getChance() + E.getChance() +
                  F.getChance() + G.getChance() + H.getChance() + I.getChance() +
@@ -286,6 +294,13 @@ public class ObjectFactory {
 					}
 					else {
 						return MENO;
+					}
+				case 58:                     // ":"
+					if (clone) {
+						return new LetterStruct((PImage)DUEPUNTI.getImage().clone(), DUEPUNTI.getPoints(), DUEPUNTI.getChance(), DUEPUNTI.getLetter());
+					}
+					else {
+						return ACAPO;
 					}
 				case 61:                     // "="
 					if (clone) {

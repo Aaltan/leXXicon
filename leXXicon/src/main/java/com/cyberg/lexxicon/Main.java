@@ -9,6 +9,7 @@ import com.cyberg.lexxicon.game.infinite.InfiniteGameCore;
 import com.cyberg.lexxicon.game.LetterGrid;
 import com.cyberg.lexxicon.game.PointsPlate;
 import com.cyberg.lexxicon.game.SuggestionPlate;
+import com.cyberg.lexxicon.game.levels.LevelConfiguration;
 import com.cyberg.lexxicon.game.levels.LevelsGameCore;
 import com.cyberg.lexxicon.saga.SagaFactory;
 import com.cyberg.lexxicon.saga.SagaGrid;
@@ -31,7 +32,9 @@ import ketai.data.KetaiSQLite;
 import ketai.ui.KetaiGesture;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 
@@ -50,8 +53,8 @@ public class Main extends PApplet {
 	private BonusPlate mBonusPlate;
 	private SuggestionPlate mSuggestionPlate;
 	public boolean fingerDown = false;
-	private float mTouchX = -1f;
-	private float mTouchY = -1f;
+	public float mTouchX = -1f;
+	public float mTouchY = -1f;
 	public PFont mWordFont;
 	public PFont mDefaultFont;
 	private DisplayWords mDisplayWords;
@@ -67,18 +70,39 @@ public class Main extends PApplet {
 	public LetterGrid mLetterGrid;
 	private MenuGrid mMenuGrid;
 	private SagaGrid mSagaGrid;
+	// Gestione transizioni (gestisce devices con navigazione gestuale anzichè buttons)
+	private boolean mInTransition = false;
+	private long mLastStateChange = 0;
+	private static final long STATE_CHANGE_COOLDOWN = 300; // ms
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		// Per Android 10+ gestisci le aree di esclusione gesture
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			getWindow().getDecorView().setSystemGestureExclusionRects(
+					new ArrayList<>() // Lascia vuoto per permettere gesture ovunque
+			);
+		}
   }
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		if (hasFocus) {
+			// Quando la finestra riprende il focus, reset del touch
+			fingerDown = false;
+			mTouchX = -1f;
+			mTouchY = -1f;
+		}
+	}
   
   public void setup() {
   	CrossVariables.initStatics(width, height, getApplicationContext());
-		Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler(this, Main.class));
+  	Thread.setDefaultUncaughtExceptionHandler(new GlobalExceptionHandler(this, Main.class));
 		//dropDB();
-  	checkDB();
+	  checkDB();
 	  sfondo = loadImage("sfondoingame.jpg");		
 	  sfondoMenu = loadImage("sfondomenu.jpg");		
 	  mWordFont = loadFont("ErasITC-Demi-20.vlw");
@@ -108,6 +132,11 @@ public class Main extends PApplet {
 	  mSagaGrid = new SagaGrid(this, mSagaFactory);
 	  mSagaCore = new SagaCore(this, sfondoMenu, mSagaGrid, mObjFactory);
 	  frameRate(30);
+
+		// Aggiungi questa riga per testare
+		if (CrossVariables.DEBUG) {
+			testLevelSystem();
+		}
 	}
   
   public void mousePressed() {
@@ -120,6 +149,15 @@ public class Main extends PApplet {
   }
 
   public void draw() {
+		if (CrossVariables.DEBUG) {
+			android.util.Log.d("TouchDebug", "State: " + CrossVariables.OVERALL_STATE +
+					"/" + getSubState() +
+					", Touch: " + mTouchX + "," + mTouchY +
+					", FingerDown: " + fingerDown +
+					", TouchPoints: " + touch.touchPoints.size() +
+					", Frame: " + frameCount);
+		}
+
 	  touch.analyse();
 	  touch.sendEvents();
 	  ArrayList<TouchPoint> touchPoints = touch.getPoints();
@@ -162,7 +200,21 @@ public class Main extends PApplet {
 	  	_Ex.printStackTrace();
 	  }
   }
-  
+
+	private int getSubState() {
+		switch (CrossVariables.OVERALL_STATE) {
+			case CrossVariables.OVERALL_MENU:
+				return CrossVariables.MENU_STATE;
+			case CrossVariables.OVERALL_SAGA:
+				return CrossVariables.SAGA_STATE;
+			case CrossVariables.OVERALL_INFINITE:
+			case CrossVariables.OVERALL_LEVEL_MODE:
+				return CrossVariables.GAME_STATE;
+			default:
+				return -1;
+		}
+	}
+
   private void drawMenu() throws Exception {
   	mMenuCore.update(mTouchX, mTouchY);
   }
@@ -225,9 +277,9 @@ public class Main extends PApplet {
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent intent) {
  	}
-  
+
 	public void onBackPressed() {
-  	switch (CrossVariables.OVERALL_STATE) {
+		switch (CrossVariables.OVERALL_STATE) {
 			case CrossVariables.OVERALL_MENU:
 				finish();
 				break;
@@ -246,38 +298,92 @@ public class Main extends PApplet {
 			case CrossVariables.GAME_OVER:
 				finish();
 				break;
-  	}
+		}
 	}
-	
+
 	public void manageSagaBack() {
-		mSagaCore.reset();
-		CrossVariables.OVERALL_STATE = CrossVariables.MENU_BOARD;
+		switch (CrossVariables.SAGA_STATE) {
+			case CrossVariables.SAGA_BOARD:
+				// Dalla griglia dei livelli torna al menu principale
+				mSagaCore.reset();
+				CrossVariables.OVERALL_STATE = CrossVariables.OVERALL_MENU;
+				break;
+			case CrossVariables.SAGA_SELECTED_EFFECT:
+				// Durante l'animazione di selezione, torna alla griglia
+				CrossVariables.SAGA_STATE = CrossVariables.SAGA_BOARD;
+				CrossVariables.LEVELS_SELECTED_NUM = -1;
+				break;
+			case CrossVariables.SAGA_LEVEL_INSTRUCTION:
+				// Dalle istruzioni torna alla griglia dei livelli
+				CrossVariables.LEVEL_INSTR_LETTERS_SHOWN = 0;
+				CrossVariables.LEVEL_INSTR_ANIM_PLAY_LEFT = -1;
+				CrossVariables.LEVELS_SELECTED_NUM = -1;
+				CrossVariables.SAGA_STATE = CrossVariables.SAGA_BOARD;
+				break;
+			case CrossVariables.SAGA_LEVEL_START_ANIM:
+				// Durante l'animazione di inizio, torna alle istruzioni
+				CrossVariables.SAGA_STATE = CrossVariables.SAGA_LEVEL_INSTRUCTION;
+				break;
+			default:
+				// Fallback: torna al menu
+				mSagaCore.reset();
+				CrossVariables.OVERALL_STATE = CrossVariables.OVERALL_MENU;
+				break;
+		}
 	}
 
 	public void manageInfiniteBack() {
-  	switch (CrossVariables.GAME_STATE) {
+		switch (CrossVariables.GAME_STATE) {
 			case CrossVariables.GAME_BOARD:
-				mInfiniteGameCore.reset();
+			case CrossVariables.GAME_SUGGESTION_EFFECT:
+			case CrossVariables.GAME_BOMB_EFFECT:
+			case CrossVariables.GAME_ICE_EFFECT:
+			case CrossVariables.GAME_WIPE_EFFECT:
+			case CrossVariables.GAME_NEW_EFFECT:
+				// Durante il gioco, mostra conferma senza fermare il timer
+				mInfiniteGameCore.showExitConfirmation();
 				break;
 			case CrossVariables.GAME_WORD_LIST:
+				// Dalla lista parole torna al gioco
 				CrossVariables.GAME_STATE = CrossVariables.GAME_BOARD;
 				break;
 			case CrossVariables.GAME_OVER:
+				// Da game over torna al menu
 				mInfiniteGameCore.reset();
+				CrossVariables.OVERALL_STATE = CrossVariables.OVERALL_MENU;
 				break;
-  	}
+			default:
+				// Altri stati: torna al menu
+				mInfiniteGameCore.reset();
+				CrossVariables.OVERALL_STATE = CrossVariables.OVERALL_MENU;
+				break;
+		}
 	}
 
 	public void manageLevelModeBack() {
 		switch (CrossVariables.GAME_STATE) {
 			case CrossVariables.GAME_BOARD:
-				mLevelsGameCore.reset();
+			case CrossVariables.GAME_SUGGESTION_EFFECT:
+			case CrossVariables.GAME_BOMB_EFFECT:
+			case CrossVariables.GAME_ICE_EFFECT:
+			case CrossVariables.GAME_WIPE_EFFECT:
+			case CrossVariables.GAME_NEW_EFFECT:
+				// Durante il gioco, mostra conferma senza fermare il timer
+				mLevelsGameCore.showExitConfirmation();
 				break;
 			case CrossVariables.GAME_WORD_LIST:
+				// Dalla lista parole torna al gioco
 				CrossVariables.GAME_STATE = CrossVariables.GAME_BOARD;
 				break;
 			case CrossVariables.GAME_OVER:
-				mLevelsGameCore.reset();
+			case CrossVariables.GAME_WIN:
+				// Da game over/win torna alla griglia livelli
+				CrossVariables.BONUS_USE_FRAMES_LEFT = 0; // Salta l'animazione
+				mLevelsGameCore.backToLevelGrid();
+				break;
+			default:
+				// Altri stati: torna alla griglia
+				mLevelsGameCore.backToLevelGrid();
 				break;
 		}
 	}
@@ -329,46 +435,203 @@ public class Main extends PApplet {
 
 	public void onPinch(PinchEvent event ) {
 	}
-  
+
 	public boolean surfaceTouchEvent(MotionEvent event) {
-		// call to keep mouseX and mouseY constants updated
-		super.surfaceTouchEvent(event);
-		 // extract the action code & the pointer ID
+		// Previeni touch durante il cooldown dopo cambio stato
+		if (System.currentTimeMillis() - mLastStateChange < STATE_CHANGE_COOLDOWN) {
+			return true;
+		}
+
 		int action = event.getAction();
-		int code   = action & MotionEvent.ACTION_MASK;
-		int index  = action >> MotionEvent.ACTION_POINTER_ID_SHIFT;
-		
+		int code = action & MotionEvent.ACTION_MASK;
+
+		// Gestisci ACTION_CANCEL (gesto di sistema Android)
+		if (code == MotionEvent.ACTION_CANCEL) {
+			// Reset completo dello stato touch
+			fingerDown = false;
+			mTouchX = -1f;
+			mTouchY = -1f;
+			if (touch != null) {
+				touch.cancelAllTouches();
+			}
+			return true;
+		}
+
+		// Gestione normale
+		super.surfaceTouchEvent(event);
+
+		int index = action >> MotionEvent.ACTION_POINTER_ID_SHIFT;
 		float x = event.getX(index);
 		float y = event.getY(index);
-		int id  = event.getPointerId(index);
-		
-		// pass the events to the TouchProcessor
-		if ( code == MotionEvent.ACTION_DOWN || code == MotionEvent.ACTION_POINTER_DOWN) {
+		int id = event.getPointerId(index);
+
+		// Pass to TouchProcessor
+		if (code == MotionEvent.ACTION_DOWN || code == MotionEvent.ACTION_POINTER_DOWN) {
 			fingerDown = true;
-		  touch.pointDown(x, y, id);
+			touch.pointDown(x, y, id);
 		}
 		else if (code == MotionEvent.ACTION_UP || code == MotionEvent.ACTION_POINTER_UP) {
 			fingerDown = false;
-		  touch.pointUp(event.getPointerId(index));
+			touch.pointUp(event.getPointerId(index));
 		}
-		else if ( code == MotionEvent.ACTION_MOVE) {
-		  int numPointers = event.getPointerCount();
-		  for (int i=0; i < numPointers; i++) {
-		    id = event.getPointerId(i);
-		    x = event.getX(i);
-		    y = event.getY(i);
-		    touch.pointMoved(x, y, id);
-		  }
-		} 
+		else if (code == MotionEvent.ACTION_MOVE) {
+			int numPointers = event.getPointerCount();
+			for (int i = 0; i < numPointers; i++) {
+				id = event.getPointerId(i);
+				x = event.getX(i);
+				y = event.getY(i);
+				touch.pointMoved(x, y, id);
+			}
+		}
+
 		return gesture.surfaceTouchEvent(event);
 	}
 	// * ------------------------------ *
 	// * - MultiTouch Processor - End - *
 	// * ------------------------------ *
-	
+
+	// Metodo per cambi di stato sicuri
+	public void changeState(int newOverallState, int newSubState) {
+		// Reset touch state
+		fingerDown = false;
+		mTouchX = -1f;
+		mTouchY = -1f;
+
+		// Marca il tempo del cambio
+		mLastStateChange = System.currentTimeMillis();
+
+		// Reset del TouchProcessor
+		if (touch != null) {
+			touch.cancelAllTouches();
+		}
+
+		// Cambia stato
+		CrossVariables.OVERALL_STATE = newOverallState;
+		if (newSubState != -1) {
+			switch (newOverallState) {
+				case CrossVariables.OVERALL_MENU:
+					CrossVariables.MENU_STATE = newSubState;
+					break;
+				case CrossVariables.OVERALL_SAGA:
+					CrossVariables.SAGA_STATE = newSubState;
+					break;
+				case CrossVariables.OVERALL_INFINITE:
+				case CrossVariables.OVERALL_LEVEL_MODE:
+					CrossVariables.GAME_STATE = newSubState;
+					break;
+			}
+		}
+	}
+
   @Override
 	public void finish() {
 		android.os.Process.killProcess(android.os.Process.myPid());
 		super.finish();
+	}
+
+	/**
+	 * Esegue i test del sistema livelli (chiamalo da onCreate o setup per debug)
+	 */
+	private void testLevelSystem() {
+		// Test solo in modalità DEBUG
+		if (!CrossVariables.DEBUG) return;
+
+		android.util.Log.d("LevelTest", "=====================================");
+		android.util.Log.d("LevelTest", "TEST SISTEMA LIVELLI");
+		android.util.Log.d("LevelTest", "=====================================");
+
+		// Test 1: Verifica esistenza livelli
+		int missingLevels = 0;
+		for (int i = 1; i <= 99; i++) {
+			if (LevelConfiguration.getLevel(i) == null) {
+				android.util.Log.e("LevelTest", "ERRORE: Livello " + i + " mancante!");
+				missingLevels++;
+			}
+		}
+
+		if (missingLevels == 0) {
+			android.util.Log.d("LevelTest", "✓ Tutti i 99 livelli definiti");
+		} else {
+			android.util.Log.e("LevelTest", "✗ Mancano " + missingLevels + " livelli");
+		}
+
+		// Test 2: Verifica distribuzione per ogni pagina
+		android.util.Log.d("LevelTest", "\n--- Distribuzione Modalità per Pagina ---");
+
+		for (int page = 0; page < 10; page++) {
+			int start = page * 10 + 1;
+			int end = Math.min(start + 8, 99);
+			if (page == 0) end = 9;
+
+			// Conta modalità
+			int canonica = 0, conAiuti = 0, findWord = 0, mathSomma = 0, binary = 0;
+
+			for (int i = start; i <= end; i++) {
+				LevelConfiguration.Level level = LevelConfiguration.getLevel(i);
+				if (level != null) {
+					switch (level.mode) {
+						case CANONICA: canonica++; break;
+						case CON_AIUTI: conAiuti++; break;
+						case FIND_WORD: findWord++; break;
+						case MATH_SOMMA: mathSomma++; break;
+						case BINARY: binary++; break;
+					}
+				}
+			}
+
+			// Verifica vincoli
+			int totalBase = canonica + conAiuti;
+			int totalMath = mathSomma + binary;
+
+			String status = "✓";
+			if (totalBase < 4 || totalBase > 7) status = "✗";
+			if (findWord < 1 || findWord > 2) status = "✗";
+			if (totalMath > 3) status = "✗";
+
+			android.util.Log.d("LevelTest",
+					String.format("%s Pag %d-%d: CAN=%d, AIUTI=%d, FIND=%d, MATH=%d, BIN=%d",
+							status, start, end, canonica, conAiuti, findWord, mathSomma, binary));
+		}
+
+		// Test 3: Stampa alcuni livelli di esempio
+		android.util.Log.d("LevelTest", "\n--- Esempi Livelli ---");
+
+		int[] sampleLevels = {1, 5, 10, 25, 50, 75, 99};
+		for (int num : sampleLevels) {
+			LevelConfiguration.Level level = LevelConfiguration.getLevel(num);
+			if (level != null) {
+				String desc = String.format("L%02d: %s - %d items in %d:%02d",
+						num,
+						level.mode.name(),
+						level.targetCount,
+						level.timeSeconds / 60,
+						level.timeSeconds % 60);
+
+				// Aggiungi dettagli specifici per modalità
+				switch (level.mode) {
+					case CANONICA:
+					case CON_AIUTI:
+						desc += " (min " + level.minWordLength + " lettere)";
+						if (!level.bonuses.isEmpty()) {
+							desc += " [" + level.bonuses.size() + " bonus]";
+						}
+						break;
+					case MATH_SOMMA:
+						desc += String.format(" (min %d nums, max %d)",
+								level.minNumbers, level.maxSum);
+						break;
+					case BINARY:
+						desc += String.format(" (%d-%d bit)",
+								level.minBinaryLength, level.maxBinaryLength);
+						break;
+				}
+
+				android.util.Log.d("LevelTest", desc);
+			}
+		}
+
+		android.util.Log.d("LevelTest", "=====================================");
+		android.util.Log.d("LevelTest", "FINE TEST");
+		android.util.Log.d("LevelTest", "=====================================");
 	}
 }

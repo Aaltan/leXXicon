@@ -10,15 +10,25 @@ public class WordPlate {
   private int mFrameTicks;
   private String mWord;
   private Main mFather;
-  private boolean mError;
+  private WordStatus mStatus;
   private int mFrameElapsed;
-  
-  public WordPlate(Main father, int frameTicks, String word, boolean error) {
-  	mFather = father;
+
+  public enum WordStatus {
+    CORRECT,      // Verde
+    ERROR,        // Rosso
+    TOO_SHORT     // Grigio
+  }
+
+  // MODIFICA: Nuovo costruttore con WordStatus
+  public WordPlate(Main father, int frameTicks, String word, WordStatus status) {
+    mFather = father;
     mFrameTicks = frameTicks;
     mWord = word;
-    mError = error;
+    mStatus = status;
     mFrameElapsed = 0;
+  }
+  public WordPlate(Main father, int frameTicks, String word, boolean error) {
+    this(father, frameTicks, word, error ? WordStatus.ERROR : WordStatus.CORRECT);
   }
 
   public void update() throws Exception {
@@ -30,13 +40,19 @@ public class WordPlate {
 			mFather.textAlign(PApplet.CENTER);
   		mFather.fill(50);
 			mFather.text(chooseTypeGameView(mWord), mFather.width / 2, PApplet.round((CrossVariables.WORD_POSITION_Y + 5) / CrossVariables.RESIZE_FACTOR_Y));
-			if (mError) {
-				mFather.fill(255, 0, 0);
-			}
-			else {
-				mFather.fill(0, 255, 0);
-			}
-			mFather.text(chooseTypeGameView(mWord), mFather.width / 2, PApplet.round(CrossVariables.WORD_POSITION_Y / CrossVariables.RESIZE_FACTOR_Y));
+      // Colore basato sul tipo di stato
+      switch (mStatus) {
+        case CORRECT:
+          mFather.fill(0, 255, 0);  // Verde
+          break;
+        case ERROR:
+          mFather.fill(255, 0, 0);  // Rosso
+          break;
+        case TOO_SHORT:
+          mFather.fill(150, 150, 150);  // Grigio
+          break;
+      }
+      mFather.text(chooseTypeGameView(mWord), mFather.width / 2, PApplet.round(CrossVariables.WORD_POSITION_Y / CrossVariables.RESIZE_FACTOR_Y));
   		mFather.popStyle();
   	}
   }

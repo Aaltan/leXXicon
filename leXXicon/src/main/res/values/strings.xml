@@ -2,22 +2,26 @@
 <resources>
 
     <string name="app_name">leXXicon</string>
-    <string name="credits">"Tiny Games Collection|Presents:|FLEXY TOWER|By Berghem 2013||Programming By:|Marco Cognolato||Theme Music:|Under a Olive Tree|By Simone Radice||Many Thanks to:|Krystof Pesek|for insipring sketch||OpenProcessing Team|for awesome RAD||Jeffrey Traer|for physic library||Capolinea guys|for testing||Special Thanks to:|ElaCogno|Global Support|||See you soon in|another Tiny Game"</string>
-    <string name="bItaliano">"Italian Dictionary"</string>
-    <string name="bBergamo">"Bergamo Dictionary"</string>
+    <string name="lvltitle">"BOARD"</string>
+    <string name="lvlstart">"PLAY"</string>
 
-    <string name="lvltitle">"BOARD "</string>
-    <string name="lvlstart">"   PLAY   "</string>
+    <!-- Titoli modalità -->
+    <string name="mode_title_classic">Classic</string>
+    <string name="mode_title_with_helps">With Helps</string>
+    <string name="mode_title_find_words">Find Words</string>
+    <string name="mode_title_math">Mathematical</string>
+    <string name="mode_title_binary">Binary</string>
 
-    <string name="lvl001title">" GIMME 3 "</string>
-    <string name="lvl001content">"COMPOSE 3 WORDS TO  COMPLETE  LEVEL"</string>
-    <string name= "lvl002title">" HELP ME "</string>
-    <string name="lvl002content">"COMPOSE 5 WORDS TO  COMPLETE  LEVEL               YOU HAVE 2HINT BONUS"</string>
-    <string name="lvl003title">"FIND THEM"</string>
-    <string name="lvl003content">"FIND WORDSSHOWN IN  UPPER PLA=TE"</string>
-    <string name="lvl004title">" ADD-ICT "</string>
-    <string name="lvl004content">"SUM AT    LEAST 2   DIGITS TO OBTAIN VA=LUES SHOWNIN UPPER  PLATE"</string>
-    <!--                          123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789- -->
+    <!-- Descrizioni modalità -->
+    <string name="mode_desc_classic">Compose %1$d words of minimum %2$d letters to complete the level</string>
+    <string name="mode_desc_with_helps">Compose %1$d words of minimum %2$d letters to complete the level</string>
+    <string name="mode_desc_find">Find the %1$d words shown above to complete the level</string>
+    <string name="mode_desc_math">Sum at least %1$d numbers to get the %2$d sums shown above</string>
+    <string name="mode_desc_binary">Find the %1$d binary sequences shown above to complete the level</string>
+
+    <!-- Tempo e aiuti -->
+    <string name="mode_time">You have %1$d:%2$02d Min</string>
+    <string name="mode_helps">You have %1$d helps</string>
 
     <!-- In Game Strings -->
     <string name="punti">"Score:"</string>
@@ -26,4 +30,9 @@
     <string name="mancanti">"Left:"</string>
     <string name="finelivello">"LEVEL DONE"</string>
     <string name="somma">"SUM:"</string>
+    <string name="exit_confrmation">"Quit Current Game ?"</string>
+    <string name="exit_game_title">EXIT GAME ?</string>
+    <string name="exit_game_message">Are you sure you want to exit ?</string>
+    <string name="yes">"Yes"</string>"
+    <string name="no">"No"</string>
 </resources>

@@ -332,4 +332,36 @@ public class TouchProcessor {
 		}
 		return null;
 	}
+
+	// Nuovo metodo per cancellare tutti i touch attivi
+	public synchronized void cancelAllTouches() {
+		// Crea una copia per evitare ConcurrentModificationException
+		ArrayList<TouchPoint> touchPointsCopy = new ArrayList<TouchPoint>(touchPoints);
+
+		// Pulisci tutti i punti touch
+		for (TouchPoint tp : touchPointsCopy) {
+			// Non chiamare pointUp che modifica la lista
+			// pointUp(tp.id);
+		}
+
+		// Ora pulisci la lista originale
+		touchPoints.clear();
+
+		// Reset tap detection
+		firstTap = null;
+		secondTap = null;
+		tapCount = 0;
+		tap = 0;
+
+		// Pulisci eventi pendenti
+		events.clear();
+
+		// Reset centroid
+		cx = 0;
+		cy = 0;
+		old_cx = 0;
+		old_cy = 0;
+
+		pointsChanged = false;
+	}
 }

@@ -2,22 +2,27 @@
 <resources>
 
     <string name="app_name">leXXicon</string>
-    <string name="credits">"Tiny Games Collection|Presents:|FLEXY TOWER|By Berghem 2013||Programming By:|Marco Cognolato||Tema Musicale:|Under a Olive Tree|By Simone Radice||Ringraziamenti a:|Krystof Pesek|Per la geniale idea||OpenProcessing Team|RAD di sviluppo||Jeffrey Traer|Libreria fisica||Ragazzi del Capolinea|Per il testing||Ringaziamento Speciale:|ElaCogno|Supporto Globale|||Arrivederci in un|altro Tiny Game"</string>
-    <string name="bItaliano">"Dizionario Italiano"</string>
-    <string name="bBergamo">"Dizionario Bergamasco"</string>
+    <string name="lvltitle">"LIVELLO "</string>
+    <string name="lvlstart">"GIOCA"</string>
 
-    <string name= "lvltitle">"SCHEMA "</string>
-    <string name= "lvlstart">"   PLAY   "</string>
+    <!-- Titoli modalità -->
+    <string name="mode_title_classic">Classico</string>
+    <string name="mode_title_with_helps">Con Aiuti</string>
+    <string name="mode_title_find_words">Cerca Parole</string>
+    <string name="mode_title_math">Matematico</string>
+    <string name="mode_title_binary">Binario</string>
 
-    <string name= "lvl001title">"DAMMI UN 3"</string>
-    <string name= "lvl001content">"FORMA 3   PAROLE PERCOMPLETAREIL LIVELLO"</string>
-    <string name= "lvl002title">"UN AIUTINO"</string>
-    <string name= "lvl002content">"FORMA 5   PAROLE PERCOMPLETAREIL LIVELLO          2 AIUTI A DISPOSI= ZIONE"</string>
-    <string name="lvl003title">" TROVALE "</string>
-    <string name="lvl003content">"COMPONI LEPAROLE VI=SUALIZZATENELLA TAR=GA IN ALTO"</string>
-    <string name="lvl004title">"IN-SOMMA"</string>
-    <string name="lvl004content">"SOMMARE   MINIMO 2  NUMERI PEROTTENERE  I VALORI  MOSTRATI  NELLA TAR=GA IN ALTO"</string>
-    <!--                          123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789- -->
+    <!-- Descrizioni modalità -->
+    <string name="mode_desc_classic">Componi %1$d parole di minimo %2$d lettere per completare il livello</string>
+    <string name="mode_desc_with_helps">Componi %1$d parole di minimo %2$d lettere per completare il livello</string>
+    <string name="mode_desc_find">Trova le %1$d parole mostrate in alto per completare il livello</string>
+    <string name="mode_desc_math">Somma almeno %1$d numeri per ottenere le %2$d somme mostrate in alto</string>
+    <string name="mode_desc_binary">Trova le %1$d sequenze binarie mostrate in alto per completare il livello</string>
+
+    <!-- Tempo e aiuti -->
+    <string name="mode_time">Hai %1$d:%2$02d Min</string>
+    <string name="mode_helps">Hai %1$d aiuti</string>
+
     <!-- In Game Strings -->
     <string name="punti">"Punti:"</string>
     <string name="possibili">"Possibili:"</string>
@@ -25,4 +30,9 @@
     <string name="mancanti">"Mancanti:"</string>
     <string name="finelivello">"FINE LIVELLO"</string>
     <string name="somma">"SOMMA:"</string>
+    <string name="exit_confrmation">"Terminare la Partita ?"</string>
+    <string name="exit_game_title">USCIRE DAL GIOCO ?</string>
+    <string name="exit_game_message">Sei sicuro di voler uscire ?</string>
+    <string name="yes">"Si"</string>
+    <string name="no">"No"</string>
 </resources>

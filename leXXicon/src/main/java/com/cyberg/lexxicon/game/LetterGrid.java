@@ -76,7 +76,23 @@ public class LetterGrid {
     }
   }
 
-  public void cleanGrid() {
+	public void fillGridBinary() {
+		int offsetY = mFather.height;
+		for (int r = 0; r < mNumRows; r++) {
+			for (int c = 0; c < mNumCols; c++) {
+				LetterStruct aLetter = mObjFactory.getBinary();
+				// Metto in negativo l'offset Y, in quanto devono partire da fuori
+				// schermo
+				if (!mSlots[r][c].isFull()) {
+					mSlots[r][c] = new ObjectSlot(mFather, mPS, aLetter, mTopY,
+									mLeftX + (c * aLetter.getImage().width),
+									-(offsetY + (aLetter.getImage().height * 3 * r)), true);
+				}
+			}
+		}
+	}
+
+	public void cleanGrid() {
 		for (int r = 0; r < mNumRows; r++) {
 			for (int c = 0; c < mNumCols; c++) {
 				mSlots[r][c].destroyParticles();
@@ -91,13 +107,18 @@ public class LetterGrid {
 	
 	public void update(float tX, float tY) throws Exception {
 		boolean inError = false;
+		WordPlate.WordStatus wordStatus = WordPlate.WordStatus.CORRECT;  // AGGIUNGI
+
 		if (CrossVariables.MARKED_FOR_SWAP.size() > 0) {
 			if (CrossVariables.correctWord()) {
 				int pointsEarned = VariousUtils.getPoints(mFather, CrossVariables.COMPOSED_WORD);
 				CrossVariables.TIMEOUT_INFINITE_MODE_TIME_LEFT = CrossVariables.TIMEOUT_INFINITE_MODE_STANDARD;
 				decreaseWordsToCompose();
 				CrossVariables.POINTS_EARNED += pointsEarned;
-				CrossVariables.WORD_PLATE = new WordPlate(mFather, 200, new String(CrossVariables.COMPOSED_WORD), inError);
+
+				// Usa il nuovo costruttore con status CORRECT
+				CrossVariables.WORD_PLATE = new WordPlate(mFather, 200,	new String(CrossVariables.COMPOSED_WORD), WordPlate.WordStatus.CORRECT);
+
 				mBonusAnim = mFather.mBonusFactory.getBonus(CrossVariables.COMPOSED_WORD);
 				if (mBonusAnim != null) {
 					CrossVariables.BONUS_GRANTED = mBonusAnim.getType();
@@ -112,15 +133,29 @@ public class LetterGrid {
 				swapSlots();
 			}
 			else {
-				inError = true;
-				CrossVariables.WORD_PLATE = new WordPlate(mFather, 200, new String(CrossVariables.COMPOSED_WORD), inError);
+				// MODIFICA: Determina il tipo di errore
+				String errorMessage = CrossVariables.COMPOSED_WORD;
+				wordStatus = WordPlate.WordStatus.ERROR;  // Default: errore generico
+
+				// Controlla se è troppo corta
+				if (CrossVariables.OVERALL_STATE == CrossVariables.OVERALL_LEVEL_MODE &&
+						CrossVariables.LEVEL_TYPE_ACTUAL_GAME == CrossVariables.LEVEL_TYPE_WORDS) {
+					int minLength = CrossVariables.LEVEL_INFOS[CrossVariables.LEVELS_SELECTED_NUM - 1].getMinWordLength();
+					if (CrossVariables.COMPOSED_WORD.trim().length() < minLength) {
+						wordStatus = WordPlate.WordStatus.TOO_SHORT;
+						errorMessage = CrossVariables.COMPOSED_WORD;
+					}
+				}
+
+				CrossVariables.WORD_PLATE = new WordPlate(mFather, 200, errorMessage, wordStatus);
 				CrossVariables.COMPOSED_WORD = "";
 				cleanSlots();
 			}
 		}
 		else {
 			if (CrossVariables.COMPOSED_WORD.trim().length() != 0) {
-				CrossVariables.WORD_PLATE = new WordPlate(mFather, 200, new String(CrossVariables.COMPOSED_WORD), inError);
+				// Durante la composizione, mostra in verde
+				CrossVariables.WORD_PLATE = new WordPlate(mFather, 200,	new String(CrossVariables.COMPOSED_WORD), WordPlate.WordStatus.CORRECT);
 			}
 		}
 		for (int c = 0; c < mNumCols; c++) {
@@ -212,6 +247,7 @@ public class LetterGrid {
 					aLetter = mObjFactory.getLetter();
 					break;
 				case CrossVariables.LEVEL_TYPE_BINARY:
+					aLetter = mObjFactory.getBinary();
 					break;
 				case CrossVariables.LEVEL_TYPE_MATH:
 					aLetter = mObjFactory.getNumber();

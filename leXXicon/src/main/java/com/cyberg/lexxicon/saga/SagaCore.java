@@ -138,9 +138,13 @@ public class SagaCore {
 		int toLevel = fromLevel + CrossVariables.SAGA_PER_PAGE - 1;
 		for (int i = fromLevel; i <= toLevel; i++) {
       if (mSagaGrid.getSlots()[i - fromLevel].overRect(aTX, aTY)) {
+				if (CrossVariables.DEBUG)
+					android.util.Log.d("SagaCore", "Entering level, resetting touch");
+
         CrossVariables.LEVELS_SELECTED_NUM = i;
         CrossVariables.SAGA_STATE = CrossVariables.SAGA_SELECTED_EFFECT;
         CrossVariables.LEVELS_FRAMES_LEFT = CrossVariables.LEVELS_ANIM_FRAMES;
+				CrossVariables.resetTouchState(mFather);
         break;
       }
 		}

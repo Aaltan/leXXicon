@@ -14,28 +14,23 @@ public class LevelInfos {
   private int mNrIceBonus = 0;
   private int mNrWipeBonus = 0;
   private int mNrNewBoardBonus = 0;
-
-  public LevelInfos(int levelType, int timerMax, int wordsLeft, int wordNumbMin, int wordNumbMax, int operationType) {
-    mLevelType = levelType;
-    mTimerMax = timerMax;
-    mWordsLeft = wordsLeft;
-    mBonusShown = false;
-    mWordNumbMin = wordNumbMin;
-    mWordNumbMax = wordNumbMax;
-    mOperationType = operationType;
-  }
+  private int mMinWordLength = 3;
 
   public LevelInfos(int levelType, int timerMax, int wordsLeft, int nrSuggestionBonus, int nrBombBonus,
-                    int nrIceBonus, int nrWipeBonus, int nrNewBoardBonus) {
+                    int nrIceBonus, int nrWipeBonus, int nrNewBoardBonus, int minWordLength, int wordNumbMin, int wordNumbMax, int operationType) {
     mLevelType = levelType;
     mTimerMax = timerMax;
     mWordsLeft = wordsLeft;
-    mBonusShown = true;
+    mBonusShown = (nrSuggestionBonus > -1 || nrBombBonus > -1 || nrIceBonus > -1 || nrWipeBonus > -1 || nrNewBoardBonus > -1);
     mNrSuggestionBonus = nrSuggestionBonus;
     mNrBombBonus = nrBombBonus;
     mNrIceBonus = nrIceBonus;
     mNrWipeBonus = nrWipeBonus;
     mNrNewBoardBonus = nrNewBoardBonus;
+    mMinWordLength = Math.max(3, minWordLength); // Minimo 3 lettere sempre
+    mWordNumbMin = wordNumbMin;
+    mWordNumbMax = wordNumbMax;
+    mOperationType = operationType;
   }
 
   public int getLevelType() {
@@ -84,5 +79,9 @@ public class LevelInfos {
 
   public int getNrNewBoardBonus() {
     return mNrNewBoardBonus;
+  }
+
+  public int getMinWordLength() {
+    return mMinWordLength;
   }
 }

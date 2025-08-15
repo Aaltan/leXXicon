@@ -9,6 +9,7 @@ import com.cyberg.lexxicon.game.SuggestionPlate;
 import com.cyberg.lexxicon.game.WordPlate;
 import com.cyberg.lexxicon.structs.LetterStruct;
 import com.cyberg.lexxicon.testutils.DisplayWords;
+import com.cyberg.lexxicon.testutils.LevelDebugHelper;
 import com.lancer.android.processing.traer.physics.ParticleSystem;
 
 import java.math.BigDecimal;
@@ -26,7 +27,10 @@ public class LevelsGameCore {
 	private SuggestionPlate mSuggestionPlate;
 	private BonusPlate mBonusPlate;
 	private DisplayWords mDisplayWords;
-	
+  private boolean mShowExitConfirmation = false;
+  private long mConfirmationStartTime = 0;
+  private final long CONFIRMATION_TIMEOUT = 3000; // 3 secondi
+
 	public LevelsGameCore(Main aFather, ParticleSystem aPS, PImage sfondo,
 												LetterGrid letterGrid, BonusPlate bonusPlate,
                         SuggestionPlate suggestionPlate, DisplayWords displayWords) {
@@ -41,16 +45,35 @@ public class LevelsGameCore {
 
   public void update(float aTX, float aTY) throws Exception {
     if (!CrossVariables.GAME_INIT) {
-    	configureLevel();
-    	if (CrossVariables.LEVEL_TYPE_ACTUAL_GAME == CrossVariables.LEVEL_TYPE_MATH) {
-        mLetterGrid.fillGridNumbers();
-      }
-      else {
-        mLetterGrid.fillGridLetters();
+      configureLevel();
+
+      switch (CrossVariables.LEVEL_TYPE_ACTUAL_GAME) {
+        case CrossVariables.LEVEL_TYPE_WORDS:
+        case CrossVariables.LEVEL_TYPE_FIND:
+          mLetterGrid.fillGridLetters();
+          break;
+        case CrossVariables.LEVEL_TYPE_MATH:
+          mLetterGrid.fillGridNumbers();
+          break;
+        case CrossVariables.LEVEL_TYPE_BINARY:
+          mLetterGrid.fillGridBinary();
+          break;
       }
       CrossVariables.GAME_INIT = true;
       CrossVariables.TIMEOUT_SAGA_MODE_PREVIOUS_TIME = System.currentTimeMillis();
     }
+
+    // Continua sempre l'aggiornamento del timer, anche durante la conferma
+    if (CrossVariables.GAME_STATE == CrossVariables.GAME_BOARD ||
+        CrossVariables.GAME_STATE == CrossVariables.GAME_SUGGESTION_EFFECT ||
+        CrossVariables.GAME_STATE == CrossVariables.GAME_BOMB_EFFECT ||
+        CrossVariables.GAME_STATE == CrossVariables.GAME_ICE_EFFECT ||
+        CrossVariables.GAME_STATE == CrossVariables.GAME_WIPE_EFFECT ||
+        CrossVariables.GAME_STATE == CrossVariables.GAME_NEW_EFFECT) {
+      updateTimer();
+    }
+
+    // Aggiornamento normale del gioco
     switch (CrossVariables.GAME_STATE) {
       case CrossVariables.GAME_BOARD:
         mPS.tick();
@@ -88,6 +111,20 @@ public class LevelsGameCore {
         drawGameOver();
         break;
     }
+
+    // Gestisci la conferma di uscita se attiva (sovrapposta al gioco)
+    if (mShowExitConfirmation) {
+      handleExitConfirmation(aTX, aTY);
+    }
+  }
+
+  /**
+   * Aggiorna solo il timer senza la logica di gioco
+   */
+  private void updateTimer() {
+    long currentTime = System.currentTimeMillis();
+    CrossVariables.TIMEOUT_SAGA_MODE_TIME_LEFT -= (currentTime - CrossVariables.TIMEOUT_SAGA_MODE_PREVIOUS_TIME);
+    CrossVariables.TIMEOUT_SAGA_MODE_PREVIOUS_TIME = currentTime;
   }
 
   private void configureLevel() {
@@ -100,6 +137,10 @@ public class LevelsGameCore {
     CrossVariables.TIMEOUT_SAGA_MODE_TIME_LEFT = CrossVariables.LEVEL_INFOS[CrossVariables.LEVELS_SELECTED_NUM - 1].getTimerMax();
     CrossVariables.WORDS_LEFT_TO_COMPOSE = CrossVariables.LEVEL_INFOS[CrossVariables.LEVELS_SELECTED_NUM - 1].getWordsLeft();
     CrossVariables.MATH_ACTUAL_MODE = CrossVariables.LEVEL_INFOS[CrossVariables.LEVELS_SELECTED_NUM - 1].getOperationType();
+
+    if (CrossVariables.DEBUG) {
+      LevelDebugHelper.debugCurrentLevel();
+    }
 	}
 
   private void drawWordList() throws Exception {
@@ -136,15 +177,39 @@ public class LevelsGameCore {
   private void drawRelatedObjects(float aTX, float aTY) throws Exception {
     CrossVariables.WORD_PLATE.update();
     CrossVariables.POINTS_PLATE.update(-1, -1);
+
     if (CrossVariables.LEVEL_INFOS[CrossVariables.LEVELS_SELECTED_NUM - 1].getBonusShown()) {
       mBonusPlate.update(aTX, aTY);
     }
     else {
-      // Show the word to find
+      // Show the word/number/sequence to find
       if (CrossVariables.LEVEL_WORD_TO_FIND.trim().equalsIgnoreCase("")) {
-        CrossVariables.LEVEL_WORD_TO_FIND = getRandomWord();
-        int posY = PApplet.round(CrossVariables.WORD_FIND_POSITION_Y / CrossVariables.RESIZE_FACTOR_Y);
-        mSuggestionPlate.initializeStatic(posY);
+        // Gestisce diversamente per ogni modalità
+        switch (CrossVariables.LEVEL_TYPE_ACTUAL_GAME) {
+          case CrossVariables.LEVEL_TYPE_FIND:
+            // Per FIND serve il solver
+            if (CrossVariables.SOLVER_PROGRESS == CrossVariables.JOB_ENDED &&
+                CrossVariables.foundCount > 0) {
+              CrossVariables.LEVEL_WORD_TO_FIND = getRandomWord();
+              int posY = PApplet.round(CrossVariables.WORD_FIND_POSITION_Y / CrossVariables.RESIZE_FACTOR_Y);
+              mSuggestionPlate.initializeStatic(posY);
+            }
+            break;
+
+          case CrossVariables.LEVEL_TYPE_MATH:
+            // Per MATH genera subito il numero
+            CrossVariables.LEVEL_WORD_TO_FIND = getRandomWord();
+            int posY = PApplet.round(CrossVariables.WORD_FIND_POSITION_Y / CrossVariables.RESIZE_FACTOR_Y);
+            mSuggestionPlate.initializeStatic(posY);
+            break;
+
+          case CrossVariables.LEVEL_TYPE_BINARY:
+            // Per BINARY genera subito la sequenza
+            CrossVariables.LEVEL_WORD_TO_FIND = getRandomWord();
+            posY = PApplet.round(CrossVariables.WORD_FIND_POSITION_Y / CrossVariables.RESIZE_FACTOR_Y);
+            mSuggestionPlate.initializeStatic(posY);
+            break;
+        }
       }
       mSuggestionPlate.update();
     }
@@ -159,6 +224,9 @@ public class LevelsGameCore {
         break;
       case CrossVariables.LEVEL_TYPE_MATH:
         aReturnValue = extractValue();
+        break;
+      case CrossVariables.LEVEL_TYPE_BINARY:
+        aReturnValue = extractBinValue();
         break;
     }
     return aReturnValue;
@@ -190,19 +258,43 @@ public class LevelsGameCore {
     String aReturnValue = "";
     int minRnd = CrossVariables.LEVEL_INFOS[CrossVariables.LEVELS_SELECTED_NUM - 1].getWordNumbMin();
     int maxRnd = CrossVariables.LEVEL_INFOS[CrossVariables.LEVELS_SELECTED_NUM - 1].getWordNumbMax();
+
     switch (CrossVariables.MATH_ACTUAL_MODE) {
       case CrossVariables.MATH_MODE_ADD:
         aReturnValue = mFather.getResources().getString(R.string.somma);
+        // VERIFICA: maxRnd dovrebbe essere il valore massimo della somma
         int rndValue = PApplet.round(mFather.random(minRnd, maxRnd));
         CrossVariables.LEVEL_NUMBER_TO_FIND = rndValue;
         aReturnValue += rndValue;
         break;
-      case CrossVariables.MATH_MODE_SUBTRACT:
-        break;
-      case CrossVariables.MATH_MODE_MULTIPY:
-        break;
-      case CrossVariables.MATH_MODE_DIVIDE:
-        break;
+      // Altri casi se necessari...
+    }
+
+    //  Debug per verificare
+    if (CrossVariables.DEBUG) {
+      android.util.Log.d("LevelsGameCore", "extractValue: " + aReturnValue + " (min=" + minRnd + ", max=" + maxRnd + ")");
+    }
+
+    return aReturnValue.toUpperCase();
+  }
+
+  private String extractBinValue() {
+    String aReturnValue = "";
+    int minRnd = CrossVariables.LEVEL_INFOS[CrossVariables.LEVELS_SELECTED_NUM - 1].getWordNumbMin();
+    int maxRnd = CrossVariables.LEVEL_INFOS[CrossVariables.LEVELS_SELECTED_NUM - 1].getWordNumbMax();
+
+    // Genera lunghezza casuale tra min e max
+    int rndLength = PApplet.round(mFather.random(minRnd, maxRnd));
+
+    for (int i = 0; i < rndLength; i++) {
+      aReturnValue += PApplet.round(mFather.random(0, 1));
+    }
+
+    CrossVariables.LEVEL_BINARY_TO_FIND = aReturnValue;
+
+    // Debug
+    if (CrossVariables.DEBUG) {
+      android.util.Log.d("LevelsGameCore", "extractBinValue: " + aReturnValue + " (length=" + rndLength + ")");
     }
     return aReturnValue.toUpperCase();
   }
@@ -314,7 +406,7 @@ public class LevelsGameCore {
     mLetterGrid.updateBonus(-1, -1);
     mSuggestionPlate.update();
     if (CrossVariables.BONUS_USE_FRAMES_LEFT == -1) {
-      reset();
+      backToLevelGrid();
     }
   }
 
@@ -332,7 +424,7 @@ public class LevelsGameCore {
     mSuggestionPlate.update();
     if (CrossVariables.BONUS_USE_FRAMES_LEFT == -1) {
       computeStars();
-      reset();
+      backToLevelGrid();
     }
   }
 
@@ -471,24 +563,187 @@ public class LevelsGameCore {
     }
   }
 
+  /**
+   * Mostra la conferma di uscita senza fermare il timer
+   */
+  public void showExitConfirmation() {
+    mShowExitConfirmation = true;
+    mConfirmationStartTime = System.currentTimeMillis();
+  }
+
+  /**
+   * Gestisce la conferma di uscita
+   */
+  public void handleExitConfirmation(float aTX, float aTY) {
+    if (!mShowExitConfirmation) return;
+
+    // Auto-nasconde dopo timeout
+    if (System.currentTimeMillis() - mConfirmationStartTime > CONFIRMATION_TIMEOUT) {
+      mShowExitConfirmation = false;
+      return;
+    }
+
+    // Disegna il dialog di conferma
+    drawExitConfirmationDialog(aTX, aTY);
+  }
+
+  /**
+   * Disegna il dialog di conferma
+   */
+  private void drawExitConfirmationDialog(float aTX, float aTY) {
+    // Overlay semi-trasparente
+    mFather.pushStyle();
+    mFather.fill(0, 0, 0, 128);
+    mFather.rect(0, 0, mFather.width, mFather.height);
+
+    // Dialog box
+    float dialogW = mFather.width * 0.8f;
+    float dialogH = mFather.height * 0.3f;
+    float dialogX = (mFather.width - dialogW) / 2;
+    float dialogY = (mFather.height - dialogH) / 2;
+
+    mFather.fill(50, 50, 50);
+    mFather.stroke(200, 200, 200);
+    mFather.strokeWeight(2);
+    mFather.rect(dialogX, dialogY, dialogW, dialogH);
+
+    // Testo di conferma
+    mFather.textFont(mFather.mWordFont);
+    mFather.textSize(PApplet.round(24 / CrossVariables.RESIZE_FACTOR_X));
+    mFather.textAlign(PApplet.CENTER);
+    mFather.fill(255, 255, 255);
+    mFather.text(getLocalizedString("exit_confirmation"),
+        mFather.width / 2,
+        dialogY + dialogH * 0.4f);
+
+    // Pulsanti
+    float buttonW = dialogW * 0.35f;
+    float buttonH = dialogH * 0.25f;
+    float yesButtonX = dialogX + dialogW * 0.15f;
+    float noButtonX = dialogX + dialogW * 0.5f;
+    float buttonY = dialogY + dialogH * 0.65f;
+
+    // Pulsante SÌ
+    mFather.fill(200, 50, 50);
+    mFather.rect(yesButtonX, buttonY, buttonW, buttonH);
+    mFather.fill(255, 255, 255);
+    mFather.textSize(PApplet.round(20 / CrossVariables.RESIZE_FACTOR_X));
+    mFather.text(getLocalizedString("yes"),
+        yesButtonX + buttonW / 2,
+        buttonY + buttonH * 0.7f);
+
+    // Pulsante NO
+    mFather.fill(50, 200, 50);
+    mFather.rect(noButtonX, buttonY, buttonW, buttonH);
+    mFather.fill(255, 255, 255);
+    mFather.text(getLocalizedString("no"),
+        noButtonX + buttonW / 2,
+        buttonY + buttonH * 0.7f);
+
+    mFather.popStyle();
+
+    // Gestisci touch sui pulsanti
+    if (aTX != -1 && aTY != -1) {
+      // Touch su SÌ - esci dal livello e torna a SAGA (non MENU!)
+      if (aTX >= yesButtonX && aTX <= yesButtonX + buttonW &&
+          aTY >= buttonY && aTY <= buttonY + buttonH) {
+        mShowExitConfirmation = false;
+        backToLevelGrid(); // Usa questo metodo che gestisce tutto
+      }
+      // Touch su NO - continua il gioco
+      else if (aTX >= noButtonX && aTX <= noButtonX + buttonW &&
+          aTY >= buttonY && aTY <= buttonY + buttonH) {
+        mShowExitConfirmation = false;
+        // Reset touch per sicurezza
+        mFather.fingerDown = false;
+      }
+    }
+  }
+
+  // Nuovo metodo per invalidare il touch
+  private void invalidateCurrentTouch() {
+    // Resetta le coordinate touch nel Main
+    mFather.fingerDown = false;
+    // Forza un frame di "cooldown" prima di accettare nuovi touch
+    mFather.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        // Piccolo delay per evitare touch accidentali
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e) {}
+      }
+    });
+  }
+
+  /**
+   * Torna alla griglia dei livelli
+   */
+  public void backToLevelGrid() {
+    if (CrossVariables.DEBUG) {
+      android.util.Log.d("LevelsGameCore", "Returning to level grid");
+    }
+
+    // Salva la pagina dal numero del livello PRIMA del reset
+    int currentLevel = CrossVariables.LEVELS_SELECTED_NUM;
+
+    // Prima reset del livello
+    reset();
+
+    // Calcola la pagina dal numero del livello
+    if (currentLevel > 0) {
+      CrossVariables.SAGA_CURRENT_PAGE = ((currentLevel - 1) / CrossVariables.SAGA_PER_PAGE) + 1;
+
+      if (CrossVariables.DEBUG) {
+        android.util.Log.d("LevelsGameCore", "Calculated page: " + CrossVariables.SAGA_CURRENT_PAGE);
+      }
+    }
+
+    // Torna alla griglia dei livelli
+    mFather.changeState(CrossVariables.OVERALL_SAGA, CrossVariables.SAGA_BOARD);
+  }
+
+  /**
+   * Ottiene stringhe localizzate per i dialog
+   */
+  private String getLocalizedString(String key) {
+    try {
+      int resId = mFather.getResources().getIdentifier(key, "string",
+          mFather.getApplicationContext().getPackageName());
+      if (resId != 0) {
+        return mFather.getResources().getString(resId);
+      }
+    } catch (Exception e) {
+      android.util.Log.e("LevelsGameCore", "Error getting localized string: " + key, e);
+    }
+
+    // Fallback in inglese
+    switch (key) {
+      case "exit_confirmation": return "QUIT CURRENT GAME?";
+      case "yes": return "YES";
+      case "no": return "NO";
+      default: return key;
+    }
+  }
+
   public void reset() {
-		mLetterGrid.cleanGrid();
-		CrossVariables.GAME_STATE = CrossVariables.GAME_BOARD;
-		CrossVariables.OVERALL_STATE = CrossVariables.MENU_BOARD;
-		CrossVariables.BONUS_USED = -1;
-		CrossVariables.TIMEOUT_SAGA_MODE_TIME_LEFT = CrossVariables.TIMEOUT_SAGA_MODE_STANDARD;
-		CrossVariables.GAME_INIT = false;
-		CrossVariables.NR_BONUS_SUGGESTION = 0;
-		CrossVariables.NR_BONUS_BOMB = 0;
-		CrossVariables.NR_BONUS_ICE = 0;
-		CrossVariables.NR_BONUS_WIPE_LETTERS = 0;
-		CrossVariables.NR_BONUS_NEW_BOARD = 0;  
-		CrossVariables.POINTS_EARNED = 0;
-		CrossVariables.COMPOSED_WORD = "";
-		CrossVariables.LEVEL_WORD_TO_FIND = "";
-		CrossVariables.LEVEL_NUMBER_TO_FIND = -1;
-		CrossVariables.MATH_ACTUAL_MODE = -1;
-		CrossVariables.LEVEL_TYPE_ACTUAL_GAME = -1;
-		CrossVariables.WORD_PLATE = new WordPlate(mFather, -1, "", true);
+    mLetterGrid.cleanGrid();
+    CrossVariables.GAME_STATE = CrossVariables.GAME_BOARD;
+    // NON cambiare OVERALL_STATE qui! Lo fa changeState
+    CrossVariables.BONUS_USED = -1;
+    CrossVariables.TIMEOUT_SAGA_MODE_TIME_LEFT = CrossVariables.TIMEOUT_SAGA_MODE_STANDARD;
+    CrossVariables.GAME_INIT = false;
+    CrossVariables.NR_BONUS_SUGGESTION = 0;
+    CrossVariables.NR_BONUS_BOMB = 0;
+    CrossVariables.NR_BONUS_ICE = 0;
+    CrossVariables.NR_BONUS_WIPE_LETTERS = 0;
+    CrossVariables.NR_BONUS_NEW_BOARD = 0;
+    CrossVariables.POINTS_EARNED = 0;
+    CrossVariables.COMPOSED_WORD = "";
+    CrossVariables.LEVEL_WORD_TO_FIND = "";
+    CrossVariables.LEVEL_NUMBER_TO_FIND = -1;
+    CrossVariables.MATH_ACTUAL_MODE = -1;
+    CrossVariables.LEVEL_TYPE_ACTUAL_GAME = -1;
+    CrossVariables.WORD_PLATE = new WordPlate(mFather, -1, "", true);
   }
 }
